@@ -1,35 +1,54 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import React, { useState, useRef, useEffect } from "react";
+import "./App.css";
+
+import mapboxgl from "mapbox-gl";
+
+mapboxgl.accessToken = import.meta.env.VITE_MAPBOX_API;
 
 function App() {
-  const [count, setCount] = useState(0)
+  const mapContainer = useRef<any>(null);
+  const map = useRef<mapboxgl.Map | null>(null);
+  const [lng, setLng] = useState(172);
+  const [lat, setLat] = useState(-41);
+  const [zoom, setZoom] = useState(4);
+  const [pitch, setPitch] = useState(52);
+  const [bearing, setBearing] = useState(-9);
+  //const style = "mapbox://styles/julesishomie/clwycze8h019801pp1qto1bwq";
+
+  useEffect(() => {
+    if (map.current) return; //initialize map only once
+    map.current = new mapboxgl.Map({
+      container: mapContainer.current,
+      style: "mapbox://styles/julesishomie/clwycze8h019801pp1qto1bwq",
+      center: [lng, lat],
+      zoom,
+      pitch,
+      bearing,
+    });
+
+    map.current.on("move", () => {
+      if (map.current !== null) {
+        setLng(parseInt(map.current.getCenter().lng.toFixed(4)));
+        setLat(parseInt(map.current.getCenter().lat.toFixed(4)));
+        setZoom(parseInt(map.current.getZoom().toFixed(2)));
+        setPitch(parseInt(map.current.getPitch().toFixed(2)));
+        setBearing(parseInt(map.current.getBearing().toFixed(3)));
+      }
+    });
+
+    map.current.scrollZoom.disable();
+    map.current.addControl(new mapboxgl.NavigationControl(), "top-right");
+  });
 
   return (
     <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+      <div className="sidebar">
+        Longitude: {lng} | Latitude: {lat} | Zoom: {zoom} | Pitch: {pitch} |
+        Bearing: {bearing}
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
+      <div ref={mapContainer} className="map-container" />
     </>
-  )
+  );
 }
 
-export default App
+export default App;

@@ -40,3 +40,20 @@
 .read-the-docs {
   color: #888888;
 } */
+.map-container {
+  height: 600px;
+}
+
+.sidebar {
+  position: absolute;
+  z-index: 1;
+  top: 0;
+  left: 0;
+  margin: 12px;
+  border-radius: 4px;
+
+  background-color: rgb(35 55 75 / 90%);
+  color: #fff;
+  padding: 6px 12px;
+  font-family: monospace;
+}
