@@ -19,13 +19,13 @@ function App() {
   const style = "mapbox://styles/julesishomie/clwycze8h019801pp1qto1bwq";
   const colors = {
     gradient: [
-      "#0000FF",
-      "#00FF00",
-      "#7FFF7F",
-      "#FFFFFF",
-      "#FF7F7F",
-      "#FF0000",
-      "#FF00FF",
+      "rgba(0, 0, 0, 0)", // nothing
+      "rgba(0, 255, 0, 0)", //Green but a = 0
+      "rgba(127, 255, 127, 0)", //#7FFF7F Light green
+      "rgba(255, 255, 255, 1)", //#FFFFFF White
+      "rgba(255, 127, 127, 1)", //#FF7F7F Light Pink
+      "rgba(255, 0, 0, 1)", //FF0000 Red
+      "rgba(255, 0, 255, 1)", //FF00FF Pink
     ],
   };
 
@@ -49,11 +49,12 @@ function App() {
     bearing?: number
   ): void => {
     if (map.current) {
-      map.current
-        .setCenter([lng ?? defaultLng, lat ?? defaultLat])
-        .setPitch(pitch ?? defaultPitch)
-        .setZoom(zoom ?? defaultZoom)
-        .setBearing(bearing ?? defaultBearing);
+      map.current.flyTo({
+        center: [lng ?? defaultLng, lat ?? defaultLat],
+        pitch: pitch ?? defaultPitch,
+        zoom: zoom ?? defaultZoom,
+        bearing: bearing ?? defaultBearing,
+      });
     }
   };
   useEffect(() => {
@@ -79,40 +80,41 @@ function App() {
         tileSize: 256,
       });
 
-      //Checks that the raster is loaded before adding it to the map.
+      //Checks that the raster is loaded, and that is not already loaded, before adding it to the map.
       map.current.on("data", (e) => {
         if (e.sourceId === "NTLChangeAbs_tileset" && e.isSourceLoaded) {
-          map.current?.addLayer({
-            id: "NTLChangeAbs",
-            source: "NTLChangeAbs_tileset",
-            type: "raster",
-            paint: {
-              "raster-color": [
-                "interpolate",
-                ["linear"],
-                ["raster-value"],
-                0,
-                colors.gradient[0],
-                23,
-                colors.gradient[1],
-                46,
-                colors.gradient[2],
-                69,
-                colors.gradient[3],
-                92,
-                colors.gradient[4],
-                115,
-                colors.gradient[5],
-                138,
-                colors.gradient[6],
-              ],
-              "raster-color-mix": [255, 0, 0, 0],
-              "raster-color-range": [0, 138],
-            },
-          });
-
-          console.log("Raster source is loaded 🚀" + e.isSourceLoaded);
-        } else console.log("Raster could not be loaded 🤷");
+          if (!map.current?.getLayer("NTLChangeAbs")) {
+            map.current?.addLayer({
+              id: "NTLChangeAbs",
+              source: "NTLChangeAbs_tileset",
+              type: "raster",
+              paint: {
+                "raster-color": [
+                  "interpolate",
+                  ["linear"],
+                  ["raster-value"],
+                  0,
+                  colors.gradient[0],
+                  23,
+                  colors.gradient[1],
+                  46,
+                  colors.gradient[2],
+                  69,
+                  colors.gradient[3],
+                  92,
+                  colors.gradient[4],
+                  115,
+                  colors.gradient[5],
+                  138,
+                  colors.gradient[6],
+                ],
+                "raster-color-mix": [255, 0, 0, 1],
+                "raster-color-range": [0, 138],
+              },
+            });
+            console.log("raster is loaded");
+          }
+        }
       });
     });
 
@@ -133,11 +135,17 @@ function App() {
      */
     map.current.scrollZoom.disable();
     map.current.addControl(new mapboxgl.NavigationControl(), "top-right");
+    document
+      .querySelector(".reset-map-view")
+      ?.addEventListener("click", () => resetMapView());
 
-    // return () => {
-    //   map.current = null;
-    // };
-  });
+    return () => {
+      if (map.current) {
+        map.current.remove();
+        map.current = null;
+      }
+    };
+  }, []);
 
   return (
     <>
@@ -145,7 +153,7 @@ function App() {
         Longitude: {defaultLng} | Latitude: {defaultLat} | Zoom: {defaultZoom} |
         Pitch:{defaultPitch} | Bearing: {defaultBearing}
       </div>
-      <button onClick={() => resetMapView(defaultLat, defaultLng)}>
+      <button className="reset-map-view" n>
         Reset Map View
       </button>
       <div ref={mapContainer} className="map-container" />
