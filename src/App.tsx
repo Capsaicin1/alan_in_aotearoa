@@ -1,5 +1,9 @@
 import { useState, useRef, useEffect } from "react";
-import "./App.css";
+import "./styles/App.css";
+import { Nav, NavItem } from "./components/Nav";
+import { Menu, MenuItem } from "./components/Menu";
+import { ReactComponent as ReactSVG } from "./assets/react.svg";
+
 import mapboxgl from "mapbox-gl";
 mapboxgl.accessToken = import.meta.env.VITE_MAPBOX_API;
 
@@ -20,7 +24,7 @@ function App() {
   const colors = {
     gradient: [
       "rgba(0, 0, 0, 0)", // nothing
-      "rgba(0, 255, 0, 0)", //Green but a = 0
+      "rgba(0, 255, 0, 0)", //Green but a = 0, so 0 opacity
       "rgba(127, 255, 127, 0)", //#7FFF7F Light green
       "rgba(255, 255, 255, 1)", //#FFFFFF White
       "rgba(255, 127, 127, 1)", //#FF7F7F Light Pink
@@ -39,7 +43,7 @@ function App() {
    * @param bearing - Map bearing.
    *
    * '?' Allows param to be optional.
-   * This function is kinda broken!!!!
+   * Function doesn't work called directly in JSX/TSX
    */
   const resetMapView = (
     lng?: number,
@@ -149,14 +153,22 @@ function App() {
 
   return (
     <>
-      <div className="sidebar">
-        Longitude: {defaultLng} | Latitude: {defaultLat} | Zoom: {defaultZoom} |
-        Pitch:{defaultPitch} | Bearing: {defaultBearing}
+      <Nav>
+        <NavItem text="test" />
+        <NavItem text="test" />
+        <NavItem text="test" />
+      </Nav>
+      {/* <Menu>
+        <MenuItem icon={<ReactSVG />} />
+      </Menu> */}
+      <div className="map">
+        <div className="sidebar">
+          Longitude: {defaultLng} | Latitude: {defaultLat} | Zoom: {defaultZoom}{" "}
+          | Pitch:{defaultPitch} | Bearing: {defaultBearing}
+        </div>
+        <button className="reset-map-view">Reset</button>
+        <div ref={mapContainer} className="map-container" />
       </div>
-      <button className="reset-map-view" n>
-        Reset Map View
-      </button>
-      <div ref={mapContainer} className="map-container" />
     </>
   );
 }
