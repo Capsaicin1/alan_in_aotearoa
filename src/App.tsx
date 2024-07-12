@@ -2,7 +2,8 @@ import { useState, useRef, useEffect } from "react";
 import "./styles/App.css";
 import { Nav, NavItem } from "./components/Nav";
 import { Menu, MenuItem } from "./components/Menu";
-import { ReactComponent as ReactSVG } from "./assets/react.svg";
+import IconComponent from "./components/IconComponent";
+import { DownArrow } from "./assets/icons/icons.ts";
 
 import mapboxgl from "mapbox-gl";
 mapboxgl.accessToken = import.meta.env.VITE_MAPBOX_API;
@@ -158,9 +159,10 @@ function App() {
         <NavItem text="test" />
         <NavItem text="test" />
       </Nav>
-      {/* <Menu>
-        <MenuItem icon={<ReactSVG />} />
-      </Menu> */}
+      {/* <IconComponent icon={DownArrow} /> */}
+      <Menu>
+        <MenuItem icon={<IconComponent icon={DownArrow} />} />
+      </Menu>
       <div className="map">
         <div className="sidebar">
           Longitude: {defaultLng} | Latitude: {defaultLat} | Zoom: {defaultZoom}{" "}

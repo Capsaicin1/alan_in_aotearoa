@@ -21,6 +21,7 @@ a {
 
 .map {
   height: 600px;
+  margin: 0px;
 }
 
 .map-container {
@@ -32,7 +33,7 @@ a {
   position: absolute;
   z-index: 1;
   left: 0;
-  margin-left: 12px;
+  margin: 12px;
   border-radius: 4px;
 
   background-color: rgb(35 55 75 / 90%);
@@ -42,19 +43,22 @@ a {
 }
 
 .reset-map-view {
-  position: relative;
+  position: absolute;
   cursor: pointer;
   color: var(--text-color);
   background-color: var(--bg);
   border-radius: var(--border-radius);
+  border: none;
 
   z-index: 1;
-  top: 62px;
+  top: 120px;
   padding: 6px 12px;
   margin-left: 12px;
   font: inherit;
+  transition: filter 300ms;
 }
 
 .reset-map-view:hover {
   background-color: var(--bg-accent);
+  filter: brightness(1.2);
 }
