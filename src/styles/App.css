@@ -1,3 +1,5 @@
+@import url("https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Inter:wght@100..900&family=Open+Sans:ital,wght@0,300..800;1,300..800&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&family=Space+Grotesk:wght@300..700&family=Work+Sans:ital,wght@0,100..900;1,100..900&display=swap");
+
 :root {
   --bg: #242526;
   --bg-accent: #484a4d;
@@ -6,6 +8,7 @@
   --border: 1px solid #474a4d;
   --border-radius: 8px;
   --speed: 500ms;
+  font-family: "Space Grotesk", sans-serif;
 }
 
 ul {
@@ -17,6 +20,11 @@ ul {
 a {
   color: var(--text-color);
   text-decoration: none;
+}
+
+.links {
+  display: flex;
+  justify-content: flex-end;
 }
 
 .map {
@@ -59,6 +67,5 @@ a {
 }
 
 .reset-map-view:hover {
-  background-color: var(--bg-accent);
-  filter: brightness(1.2);
+  filter: brightness(1.4);
 }

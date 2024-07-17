@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import "./styles/App.css";
 import { Nav, NavItem } from "./components/Nav";
-import { Menu, MenuItem } from "./components/Menu";
+import { Menu, MenuItem } from "./components/Menu.jsx";
 import IconComponent from "./components/IconComponent";
 import { DownArrow } from "./assets/icons/icons.ts";
 
@@ -85,14 +85,23 @@ function App() {
         tileSize: 256,
       });
 
+      map.current.addSource("NTLBrighter_tileset", {
+        type: "raster",
+        url: "mapbox://julesishomie.3lxwjdfg",
+        tileSize: 256,
+      });
+
       //Checks that the raster is loaded, and that is not already loaded, before adding it to the map.
       map.current.on("data", (e) => {
-        if (e.sourceId === "NTLChangeAbs_tileset" && e.isSourceLoaded) {
+        if (e.isSourceLoaded) {
           if (!map.current?.getLayer("NTLChangeAbs")) {
             map.current?.addLayer({
               id: "NTLChangeAbs",
               source: "NTLChangeAbs_tileset",
               type: "raster",
+              layout: {
+                visibility: "none",
+              },
               paint: {
                 "raster-color": [
                   "interpolate",
@@ -119,6 +128,25 @@ function App() {
             });
             console.log("raster is loaded");
           }
+
+          if (!map.current?.getLayer("NTLBrighter")) {
+            map.current?.addLayer({
+              id: "NTLBrighter",
+              source: "NTLBrighter_tileset",
+              type: "raster",
+              layout: {
+                visibility: "visible",
+              },
+              paint: {
+                "raster-color": [
+                  "case",
+                  ["==", ["raster-value"], 1],
+                  ["to-color", "#FFFF00"],
+                  ["to-color", "#FFFFFF"],
+                ],
+              },
+            });
+          }
         }
       });
     });
@@ -140,6 +168,7 @@ function App() {
      */
     map.current.scrollZoom.disable();
     map.current.addControl(new mapboxgl.NavigationControl(), "top-right");
+    map.current.addControl(new mapboxgl.ScaleControl(), "bottom-left");
     document
       .querySelector(".reset-map-view")
       ?.addEventListener("click", () => resetMapView());
@@ -155,19 +184,25 @@ function App() {
   return (
     <>
       <Nav>
-        <NavItem text="test" />
-        <NavItem text="test" />
-        <NavItem text="test" />
+        <a href="#" className="logo">
+          Aotearoa
+        </a>
+        <div className="links">
+          <NavItem text="test" />
+          <NavItem text="test" />
+          <NavItem text="test" />
+        </div>
       </Nav>
-      {/* <IconComponent icon={DownArrow} /> */}
-      <Menu>
-        <MenuItem icon={<IconComponent icon={DownArrow} />} />
-      </Menu>
       <div className="map">
-        <div className="sidebar">
+        {/* <div className="sidebar">
           Longitude: {defaultLng} | Latitude: {defaultLat} | Zoom: {defaultZoom}{" "}
           | Pitch:{defaultPitch} | Bearing: {defaultBearing}
-        </div>
+        </div> */}
+        <Menu>
+          <MenuItem icon={<IconComponent icon={DownArrow} />}>
+            <p>Hello World</p>
+          </MenuItem>
+        </Menu>
         <button className="reset-map-view">Reset</button>
         <div ref={mapContainer} className="map-container" />
       </div>
