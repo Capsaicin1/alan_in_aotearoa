@@ -16,11 +16,16 @@ function App() {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const mapContainer = useRef<any>(null);
   const map = useRef<mapboxgl.Map | null>(null);
+
+  //State
   const [defaultLng, setDefaultLng] = useState(172);
   const [defaultLat, setDefaultLat] = useState(-41);
   const [defaultZoom, setDefaultZoom] = useState(4);
   const [defaultPitch, setDefaultPitch] = useState(52);
   const [defaultBearing, setDefaultBearing] = useState(-9);
+
+  //Constants
+  const activeLayerIDs = ["NTLChangeAbs", "NTLBrighter"];
   const style = "mapbox://styles/julesishomie/clwycze8h019801pp1qto1bwq";
   const colors = {
     gradient: [
@@ -34,34 +39,6 @@ function App() {
     ],
   };
 
-  /**
-   * Resets the map view to the specified parameters or default values.
-   *
-   * @param lng - Longitudinal pos on map.
-   * @param lat - Latitudinal pos on map.
-   * @param pitch - Camera's pitch.
-   * @param zoom - Map zoom level.
-   * @param bearing - Map bearing.
-   *
-   * '?' Allows param to be optional.
-   * Function doesn't work called directly in JSX/TSX
-   */
-  const resetMapView = (
-    lng?: number,
-    lat?: number,
-    pitch?: number,
-    zoom?: number,
-    bearing?: number
-  ): void => {
-    if (map.current) {
-      map.current.flyTo({
-        center: [lng ?? defaultLng, lat ?? defaultLat],
-        pitch: pitch ?? defaultPitch,
-        zoom: zoom ?? defaultZoom,
-        bearing: bearing ?? defaultBearing,
-      });
-    }
-  };
   useEffect(() => {
     //initialize map only once
     if (map.current) return;
@@ -87,7 +64,7 @@ function App() {
 
       map.current.addSource("NTLBrighter_tileset", {
         type: "raster",
-        url: "mapbox://julesishomie.3lxwjdfg",
+        url: "mapbox://julesishomie.32ae7f6m",
         tileSize: 256,
       });
 
@@ -138,12 +115,8 @@ function App() {
                 visibility: "visible",
               },
               paint: {
-                "raster-color": [
-                  "case",
-                  ["==", ["raster-value"], 1],
-                  ["to-color", "#FFFF00"],
-                  ["to-color", "#FFFFFF"],
-                ],
+                "raster-color": "rgba(255,234,0,1)",
+                "raster-opacity": 0.9, // Slightly transparent to give a glowing effect
               },
             });
           }
@@ -166,7 +139,7 @@ function App() {
      * Disables zoom with mouse/track pad and adds zoom buttons.
      * If the map takes up the whole page, you wont be able to scroll down without doing this.
      */
-    map.current.scrollZoom.disable();
+    // map.current.scrollZoom.disable();
     map.current.addControl(new mapboxgl.NavigationControl(), "top-right");
     map.current.addControl(new mapboxgl.ScaleControl(), "bottom-left");
     document
@@ -181,17 +154,56 @@ function App() {
     };
   }, []);
 
+  /**
+   * Resets the map view to the specified parameters or default values.
+   * @param lng - Longitudinal pos on map.
+   * @param lat - Latitudinal pos on map.
+   * @param pitch - Camera's pitch.
+   * @param zoom - Map zoom level.
+   * @param bearing - Map bearing.
+   * '?' Allows param to be optional.
+   * Function doesn't work called directly in JSX/TSX
+   */
+  const resetMapView = (
+    lng?: number,
+    lat?: number,
+    pitch?: number,
+    zoom?: number,
+    bearing?: number
+  ): void => {
+    if (map.current) {
+      map.current.flyTo({
+        center: [lng ?? defaultLng, lat ?? defaultLat],
+        pitch: pitch ?? defaultPitch,
+        zoom: zoom ?? defaultZoom,
+        bearing: bearing ?? defaultBearing,
+      });
+    }
+  };
+
+  /**
+   * Toggles the layers visibility on and off when called.
+   * @param layerID
+   */
+  const handleLayerToggle = (layerID: string) => {
+    const visibility = map.current?.getLayoutProperty(layerID, "visibility");
+
+    if (visibility === "visible") {
+      map.current?.setLayoutProperty(layerID, "visibility", "none");
+    } else {
+      map.current?.setLayoutProperty(layerID, "visibility", "visible");
+    }
+  };
+
   return (
     <>
       <Nav>
-        <a href="#" className="logo">
+        <a id="logo" href="#">
           Aotearoa
         </a>
-        <div className="links">
-          <NavItem text="test" />
-          <NavItem text="test" />
-          <NavItem text="test" />
-        </div>
+        <NavItem text="test" />
+        <NavItem text="test" />
+        <NavItem text="test" />
       </Nav>
       <div className="map">
         {/* <div className="sidebar">
@@ -200,14 +212,43 @@ function App() {
         </div> */}
         <Menu>
           <MenuItem icon={<IconComponent icon={DownArrow} />}>
-            <p>Hello World</p>
+            {/* <DropDown /> */}
           </MenuItem>
         </Menu>
         <button className="reset-map-view">Reset</button>
         <div ref={mapContainer} className="map-container" />
       </div>
+      {activeLayerIDs.map((l) => (
+        <button onClick={() => handleLayerToggle(l)}>{l}</button>
+      ))}
+      <div id="toggle-layers-buttons-temp"></div>
     </>
   );
 }
+
+// function DropDown() {
+//   type DropDownProps = {
+//     leftIcon: ReactNode;
+//     rightIcon: ReactNode;
+//     children: React.ReactNode;
+//   };
+//   const DropdownItem = ({ leftIcon, rightIcon, children }: DropDownProps) => {
+//     return (
+//       <a href="#" className="dropdown-item">
+//         <span className="icon-button">{leftIcon}</span>
+//         {children}
+//         <span className="icon-button">{rightIcon}</span>
+//       </a>
+//     );
+//   };
+
+//   return (
+//     // <div className="dropdown">
+//     //   <DropdownItem leftIcon={} rightIcon={}>
+//     //     Helo
+//     //   </DropdownItem>
+//     // </div>
+//   );
+// }
 
 export default App;

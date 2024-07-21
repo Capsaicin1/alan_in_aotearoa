@@ -28,6 +28,8 @@ a {
   padding: 0 1rem;
   border-bottom: var(--border-radius);
   display: flex;
+  justify-content: space-between;
+  flex-basis: 100%;
 }
 
 .navbar a {
@@ -48,4 +50,8 @@ a {
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+.logo {
+  align-self: flex-start;
 }

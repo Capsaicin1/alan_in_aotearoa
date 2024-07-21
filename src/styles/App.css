@@ -22,11 +22,6 @@ a {
   text-decoration: none;
 }
 
-.links {
-  display: flex;
-  justify-content: flex-end;
-}
-
 .map {
   height: 600px;
   margin: 0px;
