@@ -1,9 +1,9 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, ReactNode } from "react";
 import "./styles/App.css";
 import { Nav, NavItem } from "./components/Nav";
 import { Menu, MenuItem } from "./components/Menu.jsx";
 import IconComponent from "./components/IconComponent";
-import { DownArrow } from "./assets/icons/icons.ts";
+import { DownArrow, CloseX } from "./assets/icons/icons.ts";
 
 import mapboxgl from "mapbox-gl";
 mapboxgl.accessToken = import.meta.env.VITE_MAPBOX_API;
@@ -198,9 +198,6 @@ function App() {
   return (
     <>
       <Nav>
-        <a id="logo" href="#">
-          Aotearoa
-        </a>
         <NavItem text="test" />
         <NavItem text="test" />
         <NavItem text="test" />
@@ -212,43 +209,45 @@ function App() {
         </div> */}
         <Menu>
           <MenuItem icon={<IconComponent icon={DownArrow} />}>
-            {/* <DropDown /> */}
+            <DropDown />
           </MenuItem>
         </Menu>
         <button className="reset-map-view">Reset</button>
         <div ref={mapContainer} className="map-container" />
       </div>
       {activeLayerIDs.map((l) => (
-        <button onClick={() => handleLayerToggle(l)}>{l}</button>
+        <button key={l} onClick={() => handleLayerToggle(l)}>
+          {l}
+        </button>
       ))}
       <div id="toggle-layers-buttons-temp"></div>
     </>
   );
 }
 
-// function DropDown() {
-//   type DropDownProps = {
-//     leftIcon: ReactNode;
-//     rightIcon: ReactNode;
-//     children: React.ReactNode;
-//   };
-//   const DropdownItem = ({ leftIcon, rightIcon, children }: DropDownProps) => {
-//     return (
-//       <a href="#" className="dropdown-item">
-//         <span className="icon-button">{leftIcon}</span>
-//         {children}
-//         <span className="icon-button">{rightIcon}</span>
-//       </a>
-//     );
-//   };
+function DropDown() {
+  type DropDownProps = {
+    leftIcon?: ReactNode;
+    rightIcon?: ReactNode;
+    children: React.ReactNode;
+  };
+  const DropdownItem = ({ leftIcon, rightIcon, children }: DropDownProps) => {
+    return (
+      <a href="#" className="menu-item">
+        <span className="icon-button">{leftIcon}</span>
+        {children}
+        <span className="icon-button">{rightIcon}</span>
+      </a>
+    );
+  };
 
-//   return (
-//     // <div className="dropdown">
-//     //   <DropdownItem leftIcon={} rightIcon={}>
-//     //     Helo
-//     //   </DropdownItem>
-//     // </div>
-//   );
-// }
+  return (
+    <div className="dropdown">
+      <DropdownItem leftIcon={<IconComponent icon={CloseX} />}>
+        Helo
+      </DropdownItem>
+    </div>
+  );
+}
 
 export default App;

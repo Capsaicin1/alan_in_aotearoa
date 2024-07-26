@@ -2,9 +2,14 @@ import React from "react";
 import "../components/Nav.css";
 
 function Nav(props: React.PropsWithChildren) {
+  document.addEventListener("scroll", () => {});
+
   return (
     <div>
       <div className="navbar">
+        <a className="logo" href="#">
+          Aotearoa
+        </a>
         <ul className="navbar-nav"> {props.children} </ul>
       </div>
     </div>

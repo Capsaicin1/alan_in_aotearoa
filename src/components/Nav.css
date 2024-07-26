@@ -25,16 +25,16 @@ a {
 .navbar {
   height: var(--nav-size);
   background-color: var(--bg);
-  padding: 0 1rem;
+  /* padding: 0 1rem; */
   border-bottom: var(--border-radius);
   display: flex;
   justify-content: space-between;
   flex-basis: 100%;
 }
 
-.navbar a {
-  float: left;
+.navbar .logo {
   align-self: center;
+  padding-left: 3rem;
 }
 
 .navbar-nav {
@@ -42,7 +42,7 @@ a {
   height: 100%;
   display: flex;
   gap: 2rem;
-  padding-right: 4rem;
+  padding-right: 3rem;
 }
 
 .nav-item {
@@ -50,8 +50,4 @@ a {
   display: flex;
   align-items: center;
   justify-content: center;
-}
-
-.logo {
-  align-self: flex-start;
 }
