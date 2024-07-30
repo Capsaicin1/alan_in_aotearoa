@@ -15,12 +15,6 @@
   z-index: 1;
   margin: 10px;
   border-radius: 50%;
-
-  transition: filter 300ms;
-}
-
-.menu:hover {
-  filter: brightness(1.4);
 }
 
 .menu-item {
@@ -28,6 +22,13 @@
   align-items: center;
   justify-content: center;
 }
+/* 
+.menu-button {
+  transition: filter 300ms;
+}
+.menu-button:hover {
+  filter: brightness(1.4);
+} */
 
 .icon-button {
   width: var(--menu-size);

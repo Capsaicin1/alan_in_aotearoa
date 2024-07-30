@@ -195,6 +195,32 @@ function App() {
     }
   };
 
+  // DropDown React Functional Component
+  function DropDown() {
+    type DropDownProps = {
+      leftIcon?: ReactNode;
+      rightIcon?: ReactNode;
+      children: React.ReactNode;
+    };
+    const DropdownItem = ({ leftIcon, rightIcon, children }: DropDownProps) => {
+      return (
+        <a href="#" className="dropdown-item">
+          <span className="icon-left">{leftIcon}</span>
+          {children}
+          <span className="icon-right">{rightIcon}</span>
+        </a>
+      );
+    };
+
+    return (
+      <div className="dropdown">
+        <DropdownItem leftIcon={<IconComponent icon={CloseX} />}>
+          Goeie Môre
+        </DropdownItem>
+      </div>
+    );
+  }
+
   return (
     <>
       <Nav>
@@ -212,7 +238,7 @@ function App() {
             <DropDown />
           </MenuItem>
         </Menu>
-        <button className="reset-map-view">Reset</button>
+        {/* <button className="reset-map-view">Reset</button> */}
         <div ref={mapContainer} className="map-container" />
       </div>
       {activeLayerIDs.map((l) => (
@@ -220,33 +246,7 @@ function App() {
           {l}
         </button>
       ))}
-      <div id="toggle-layers-buttons-temp"></div>
     </>
-  );
-}
-
-function DropDown() {
-  type DropDownProps = {
-    leftIcon?: ReactNode;
-    rightIcon?: ReactNode;
-    children: React.ReactNode;
-  };
-  const DropdownItem = ({ leftIcon, rightIcon, children }: DropDownProps) => {
-    return (
-      <a href="#" className="menu-item">
-        <span className="icon-button">{leftIcon}</span>
-        {children}
-        <span className="icon-button">{rightIcon}</span>
-      </a>
-    );
-  };
-
-  return (
-    <div className="dropdown">
-      <DropdownItem leftIcon={<IconComponent icon={CloseX} />}>
-        Helo
-      </DropdownItem>
-    </div>
   );
 }
 

@@ -77,7 +77,7 @@ a {
   overflow: hidden;
 }
 
-.menu-item {
+.dropdown-item {
   height: 50px;
   display: flex;
   align-items: center;
@@ -86,6 +86,23 @@ a {
   padding: 0.5rem;
 }
 
-.menu-item:hover {
-  background-color: #525337;
+/* .dropdown-item:hover {
+  background-color: #525357;
+} */
+
+.icon-left {
+  width: var(--menu-size);
+  height: var(--menu-size);
+  padding: 1px;
+  margin-right: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: var(--border);
+  border-radius: 50%;
+  transition: background var(--speed);
+}
+
+.icon-left:hover {
+  background-color: #525357;
 }
