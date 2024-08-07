@@ -5,7 +5,7 @@ function Nav(props: React.PropsWithChildren) {
   document.addEventListener("scroll", () => {});
 
   return (
-    <div>
+    <div id="navigation">
       <div className="navbar">
         <a className="logo" href="#">
           Aotearoa

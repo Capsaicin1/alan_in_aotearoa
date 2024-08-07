@@ -25,20 +25,21 @@ a {
 .navbar {
   height: var(--nav-size);
   background-color: var(--bg);
-  /* padding: 0 1rem; */
-  border-bottom: var(--border-radius);
+  border-bottom: var(--border);
   display: flex;
   justify-content: space-between;
   flex-basis: 100%;
+  margin: 0 10px;
 }
 
 .navbar .logo {
   align-self: center;
   padding-left: 3rem;
+  font-weight: 600;
+  font-size: 20px;
 }
 
 .navbar-nav {
-  /* max-width: 100%; */
   height: 100%;
   display: flex;
   gap: 2rem;
@@ -51,3 +52,11 @@ a {
   align-items: center;
   justify-content: center;
 }
+
+/* .nav-item .icon-button {
+  transition: font-size 1.5;
+}
+
+.nav-item .icon-button:hover {
+  font-size: large;
+} */

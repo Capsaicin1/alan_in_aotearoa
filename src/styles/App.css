@@ -24,7 +24,9 @@ a {
 
 .map {
   height: 600px;
-  margin: 0px;
+  margin: 10px 10px;
+  border: var(--border);
+  border-radius: 2px;
 }
 
 .map-container {
@@ -46,10 +48,9 @@ a {
 }
 
 .reset-map-view {
-  position: absolute;
   cursor: pointer;
-  color: var(--text-color);
-  background-color: var(--bg);
+  color: var(--bg);
+  background-color: var(--text-color);
   border-radius: var(--border-radius);
   border: none;
 
@@ -64,7 +65,7 @@ a {
 .reset-map-view:hover {
   filter: brightness(1.4);
 }
-
+/* 
 .dropdown {
   position: absolute;
   top: 58px;
@@ -84,12 +85,12 @@ a {
   border-radius: var(--border-radius);
   transition: background var(--speed);
   padding: 0.5rem;
-}
+} */
 
 /* .dropdown-item:hover {
   background-color: #525357;
 } */
-
+/* 
 .icon-left {
   width: var(--menu-size);
   height: var(--menu-size);
@@ -104,5 +105,5 @@ a {
 }
 
 .icon-left:hover {
-  background-color: #525357;
-}
+  background-color: #525357; */
+/* } */

@@ -1,9 +1,12 @@
-import { useState, useRef, useEffect, ReactNode } from "react";
+import { useState, useRef, useEffect } from "react";
 import "./styles/App.css";
+
 import { Nav, NavItem } from "./components/Nav";
-import { Menu, MenuItem } from "./components/Menu.jsx";
+import { Menu, MenuItem } from "./components/Menu.tsx";
+import Accordion from "./components/Accordion.tsx";
+
 import IconComponent from "./components/IconComponent";
-import { DownArrow, CloseX } from "./assets/icons/icons.ts";
+import { DownArrow } from "./assets/icons/icons.ts";
 
 import mapboxgl from "mapbox-gl";
 mapboxgl.accessToken = import.meta.env.VITE_MAPBOX_API;
@@ -27,6 +30,8 @@ function App() {
   //Constants
   const activeLayerIDs = ["NTLChangeAbs", "NTLBrighter"];
   const style = "mapbox://styles/julesishomie/clwycze8h019801pp1qto1bwq";
+
+  //Object containing colours for the map styling
   const colors = {
     gradient: [
       "rgba(0, 0, 0, 0)", // nothing
@@ -79,6 +84,7 @@ function App() {
               layout: {
                 visibility: "none",
               },
+              //
               paint: {
                 "raster-color": [
                   "interpolate",
@@ -106,6 +112,7 @@ function App() {
             console.log("raster is loaded");
           }
 
+          //Adds layer & checks if the layer exists already
           if (!map.current?.getLayer("NTLBrighter")) {
             map.current?.addLayer({
               id: "NTLBrighter",
@@ -195,31 +202,40 @@ function App() {
     }
   };
 
-  // DropDown React Functional Component
-  function DropDown() {
-    type DropDownProps = {
-      leftIcon?: ReactNode;
-      rightIcon?: ReactNode;
-      children: React.ReactNode;
-    };
-    const DropdownItem = ({ leftIcon, rightIcon, children }: DropDownProps) => {
-      return (
-        <a href="#" className="dropdown-item">
-          <span className="icon-left">{leftIcon}</span>
-          {children}
-          <span className="icon-right">{rightIcon}</span>
-        </a>
-      );
-    };
-
-    return (
-      <div className="dropdown">
-        <DropdownItem leftIcon={<IconComponent icon={CloseX} />}>
-          Goeie Môre
-        </DropdownItem>
-      </div>
-    );
-  }
+  //Array of objects that contain the data for the accordion menu.
+  const accordionData = [
+    {
+      id: 0,
+      label: "Map Layers",
+      renderContent: () => (
+        <div className="button_container">
+          {activeLayerIDs.map((l) => (
+            <button key={l} onClick={() => handleLayerToggle(l)}>
+              {l}
+            </button>
+          ))}
+          <button className="reset-map-view">Reset</button>
+        </div>
+      ),
+    },
+    {
+      id: 1,
+      label: "Map Legend",
+      renderContent: () => (
+        <ol>
+          <li>List Item</li>
+          <li>List Item</li>
+          <li>List Item</li>
+          <li>List Item</li>
+        </ol>
+      ),
+    },
+    {
+      id: 2,
+      label: "Acknowledgements",
+      renderContent: () => <p>Ellen Cieraad</p>,
+    },
+  ];
 
   return (
     <>
@@ -235,17 +251,11 @@ function App() {
         </div> */}
         <Menu>
           <MenuItem icon={<IconComponent icon={DownArrow} />}>
-            <DropDown />
+            <Accordion items={accordionData} keepOtherOpen={true} />
           </MenuItem>
         </Menu>
-        {/* <button className="reset-map-view">Reset</button> */}
         <div ref={mapContainer} className="map-container" />
       </div>
-      {activeLayerIDs.map((l) => (
-        <button key={l} onClick={() => handleLayerToggle(l)}>
-          {l}
-        </button>
-      ))}
     </>
   );
 }

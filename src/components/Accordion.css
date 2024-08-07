@@ -1,0 +1,99 @@
+:root {
+  --bg: #242526;
+  --bg-accent: #484a4d;
+  --text-color: #dadce1;
+  --menu-size: 33px;
+  --border: 1px solid #474a4d;
+  --border-radius: 5px;
+  --speed: 500ms;
+  font-family: "Space Grotesk", sans-serif;
+}
+
+.accordion-parent {
+  border-radius: var(--border-radius);
+  background-color: var(--bg);
+  box-shadow: 0 1px 2px #00000033;
+  position: absolute;
+  transform: translateX(46%);
+  top: 50px;
+  width: 500px;
+  border: var(--border);
+}
+
+.accordion {
+  display: flex;
+  flex-direction: column;
+  max-width: 500px;
+}
+
+.accordion .toggle {
+  /* display: flex; */
+  justify-content: space-between;
+  align-items: center;
+  font-size: 1rem;
+  padding: 10px 15px;
+  fill: var(--text-color);
+  color: var(--text-color);
+  transition: color 0.15s ease, fill 0.15s ease;
+  font-weight: 400;
+  border: 0;
+  background-color: transparent;
+  cursor: pointer;
+}
+
+.accordion .flex-wrapper {
+  display: flex;
+  /* flex-grow: 2; */
+  justify-content: space-between;
+}
+
+.accordion .flex-wrapper p {
+  /* flex-grow: 1; */
+}
+
+.accordion .toggle:hover {
+  color: var(--bg-accent);
+  fill: var(--bg-accent);
+}
+
+.accordion:first-child .toggle {
+  border-bottom: 0;
+}
+
+.accordion .toggle .direction-indicator {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 15px;
+}
+
+.accordion .content-parent {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 400ms ease-out;
+  color: var(--text-color);
+  border-bottom: var(--border);
+  flex-grow: 1;
+}
+
+.accordion.toggled .content-parent {
+  max-height: 500px;
+  transition: max-height 300ms ease-in;
+}
+
+.accordion .content {
+  padding: 10px 15px;
+  display: flex;
+}
+
+.accordion .content .button_container {
+  display: flex;
+  justify-content: space-evenly;
+  flex-grow: 1;
+}
+
+.accordion .content .button_container button {
+  padding: 10px 5px;
+  border-radius: var(--border-radius);
+  text-decoration: none;
+}
