@@ -24,13 +24,12 @@ a {
 
 .map {
   height: 600px;
-  margin: 10px 10px;
+  margin: 10px 20px;
   border: var(--border);
   border-radius: 2px;
 }
 
 .map-container {
-  top: 0;
   height: 100%;
 }
 

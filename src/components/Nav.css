@@ -29,8 +29,18 @@ a {
   display: flex;
   justify-content: space-between;
   flex-basis: 100%;
-  margin: 0 10px;
+  margin: 0 20px;
+  /* 
+  position: fixed;
+  top: 0;
+  z-index: 11111;
+  width: 100%; */
 }
+/* 
+.navbar .scrolled {
+  top: 0;
+  position: fixed;
+} */
 
 .navbar .logo {
   align-self: center;

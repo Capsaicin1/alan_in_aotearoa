@@ -1,17 +1,49 @@
-import React from "react";
+import React, { useEffect, useRef, useState } from "react";
 import "../components/Nav.css";
+import { useGSAP } from "@gsap/react";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+gsap.registerPlugin(ScrollTrigger);
 
 function Nav(props: React.PropsWithChildren) {
-  document.addEventListener("scroll", () => {});
+  const navRef = useRef<HTMLDivElement>(null);
+  const logoRef = useRef<HTMLAnchorElement>(null);
+  const [scroll, setScroll] = useState(false);
+
+  useGSAP(() => {
+    const navEl = navRef.current;
+    const logoEl = logoRef.current;
+
+    const tl = gsap.timeline({
+      scrollTrigger: {
+        trigger: navEl,
+        start: 20,
+        end: 0,
+        scrub: true,
+        markers: false,
+      },
+    });
+
+    tl.to(navEl, {
+      borderBottom: "1px solid #dadce1",
+      margin: 0,
+      duration: 1.7,
+      ease: "power3.out",
+    });
+  }, {});
+
+  useEffect(() => {
+    window.addEventListener("scroll", () => {
+      setScroll(window.scrollY > 5);
+    });
+  }, []);
 
   return (
-    <div id="navigation">
-      <div className="navbar">
-        <a className="logo" href="#">
-          Aotearoa
-        </a>
-        <ul className="navbar-nav"> {props.children} </ul>
-      </div>
+    <div className={scroll ? "navbar scrolled" : "navbar"} ref={navRef}>
+      <a className="logo" href="#" ref={logoRef}>
+        Aotearoa
+      </a>
+      <ul className="navbar-nav"> {props.children} </ul>
     </div>
   );
 }

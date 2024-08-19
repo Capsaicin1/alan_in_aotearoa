@@ -206,7 +206,7 @@ function App() {
   const accordionData = [
     {
       id: 0,
-      label: "Map Layers",
+      label: "Layers",
       renderContent: () => (
         <div className="button_container">
           {activeLayerIDs.map((l) => (
@@ -220,7 +220,7 @@ function App() {
     },
     {
       id: 1,
-      label: "Map Legend",
+      label: "Legend",
       renderContent: () => (
         <ol>
           <li>List Item</li>
@@ -239,22 +239,34 @@ function App() {
 
   return (
     <>
-      <Nav>
-        <NavItem text="test" />
-        <NavItem text="test" />
-        <NavItem text="test" />
-      </Nav>
-      <div className="map">
-        {/* <div className="sidebar">
+      <div id="smooth-wrapper">
+        <div id="smooth-content">
+          <Nav>
+            <NavItem text="test" />
+            <NavItem text="test" />
+            <NavItem text="test" />
+          </Nav>
+          <div className="map">
+            {/* <div className="sidebar">
           Longitude: {defaultLng} | Latitude: {defaultLat} | Zoom: {defaultZoom}{" "}
           | Pitch:{defaultPitch} | Bearing: {defaultBearing}
         </div> */}
-        <Menu>
-          <MenuItem icon={<IconComponent icon={DownArrow} />}>
-            <Accordion items={accordionData} keepOtherOpen={true} />
-          </MenuItem>
-        </Menu>
-        <div ref={mapContainer} className="map-container" />
+            <Menu>
+              <MenuItem icon={<IconComponent icon={DownArrow} />}>
+                <Accordion items={accordionData} keepOtherOpen={true} />
+              </MenuItem>
+            </Menu>
+            <div ref={mapContainer} className="map-container" />
+          </div>
+          <div
+            style={{
+              height: "500px",
+              width: "300px",
+              backgroundColor: "green",
+              marginLeft: "40%",
+            }}
+          ></div>
+        </div>
       </div>
     </>
   );
