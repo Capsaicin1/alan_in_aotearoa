@@ -159,6 +159,7 @@ function App() {
         map.current = null;
       }
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   /**
@@ -239,35 +240,31 @@ function App() {
 
   return (
     <>
-      <div id="smooth-wrapper">
-        <div id="smooth-content">
-          <Nav>
-            <NavItem text="test" />
-            <NavItem text="test" />
-            <NavItem text="test" />
-          </Nav>
-          <div className="map">
-            {/* <div className="sidebar">
+      <Nav>
+        <NavItem text="test" />
+        <NavItem text="test" />
+        <NavItem text="test" />
+      </Nav>
+      <div className="map">
+        {/* <div className="sidebar">
           Longitude: {defaultLng} | Latitude: {defaultLat} | Zoom: {defaultZoom}{" "}
           | Pitch:{defaultPitch} | Bearing: {defaultBearing}
         </div> */}
-            <Menu>
-              <MenuItem icon={<IconComponent icon={DownArrow} />}>
-                <Accordion items={accordionData} keepOtherOpen={true} />
-              </MenuItem>
-            </Menu>
-            <div ref={mapContainer} className="map-container" />
-          </div>
-          <div
-            style={{
-              height: "500px",
-              width: "300px",
-              backgroundColor: "green",
-              marginLeft: "40%",
-            }}
-          ></div>
-        </div>
+        <Menu>
+          <MenuItem icon={<IconComponent icon={DownArrow} />}>
+            <Accordion items={accordionData} keepOtherOpen={true} />
+          </MenuItem>
+        </Menu>
+        <div ref={mapContainer} className="map-container" />
       </div>
+      <div
+        style={{
+          height: "500px",
+          width: "100%",
+          backgroundColor: "blue",
+          marginTop: "5rem",
+        }}
+      ></div>
     </>
   );
 }

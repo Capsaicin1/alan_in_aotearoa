@@ -44,6 +44,7 @@ function Nav(props: React.PropsWithChildren) {
         Aotearoa
       </a>
       <ul className="navbar-nav"> {props.children} </ul>
+      <button style={{ width: "80px" }}>boom</button>
     </div>
   );
 }

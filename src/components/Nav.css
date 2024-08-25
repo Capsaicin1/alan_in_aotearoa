@@ -2,6 +2,7 @@
 
 :root {
   --bg: #242526;
+  --bg2: #020302;
   --bg-accent: #484a4d;
   --text-color: #dadce1;
   --nav-size: 60px;
@@ -24,7 +25,7 @@ a {
 
 .navbar {
   height: var(--nav-size);
-  background-color: var(--bg);
+  background-color: var(--bg2);
   border-bottom: var(--border);
   display: flex;
   justify-content: space-between;
@@ -44,16 +45,22 @@ a {
 
 .navbar .logo {
   align-self: center;
-  padding-left: 3rem;
+  margin-left: 3rem;
   font-weight: 600;
   font-size: 20px;
 }
 
+.navbar button {
+  margin-right: 3rem;
+}
 .navbar-nav {
   height: 100%;
   display: flex;
   gap: 2rem;
-  padding-right: 3rem;
+  flex-grow: 1;
+  align-items: center;
+  justify-content: center;
+  /* padding-right: 3rem; */
 }
 
 .nav-item {
