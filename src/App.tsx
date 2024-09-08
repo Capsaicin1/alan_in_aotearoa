@@ -7,8 +7,10 @@ import Accordion from "./components/Accordion.tsx";
 
 import IconComponent from "./components/IconComponent";
 import { DownArrow } from "./assets/icons/icons.ts";
+import { InfoCircleOutline } from "./assets/icons/icons.ts";
 
 import mapboxgl from "mapbox-gl";
+import SidePanel from "./components/SidePanel.tsx";
 mapboxgl.accessToken = import.meta.env.VITE_MAPBOX_API;
 
 /**
@@ -147,7 +149,7 @@ function App() {
      * If the map takes up the whole page, you wont be able to scroll down without doing this.
      */
     // map.current.scrollZoom.disable();
-    map.current.addControl(new mapboxgl.NavigationControl(), "top-right");
+    map.current.addControl(new mapboxgl.NavigationControl(), "bottom-right");
     map.current.addControl(new mapboxgl.ScaleControl(), "bottom-left");
     document
       .querySelector(".reset-map-view")
@@ -215,7 +217,6 @@ function App() {
               {l}
             </button>
           ))}
-          <button className="reset-map-view">Reset</button>
         </div>
       ),
     },
@@ -240,31 +241,35 @@ function App() {
 
   return (
     <>
-      <Nav>
-        <NavItem text="test" />
-        <NavItem text="test" />
-        <NavItem text="test" />
-      </Nav>
-      <div className="map">
-        {/* <div className="sidebar">
-          Longitude: {defaultLng} | Latitude: {defaultLat} | Zoom: {defaultZoom}{" "}
-          | Pitch:{defaultPitch} | Bearing: {defaultBearing}
-        </div> */}
+      <div className="content">
+        <Nav>
+          <NavItem text="test" />
+          <NavItem text="test" />
+          <NavItem text="test" />
+        </Nav>
         <Menu>
           <MenuItem icon={<IconComponent icon={DownArrow} />}>
             <Accordion items={accordionData} keepOtherOpen={true} />
           </MenuItem>
         </Menu>
-        <div ref={mapContainer} className="map-container" />
+        <div className="map">
+          <div ref={mapContainer} className="map-container" />
+          <SidePanel />
+          <div className="sidebar">
+            <span className="sidebar-acknowledgements">
+              Data Acknowledgements{" "}
+              <button className="sidebar-acknowledgements-icon">
+                <IconComponent icon={InfoCircleOutline} size={18} />
+              </button>
+            </span>
+            <span className="sidebar-geo-info">
+              <button className="reset-map-view">Reset</button> | Longitude:{" "}
+              {defaultLng} | Latitude: {defaultLat} | Zoom:
+              {defaultZoom} | Pitch: {defaultPitch} | Bearing: {defaultBearing}
+            </span>
+          </div>
+        </div>
       </div>
-      <div
-        style={{
-          height: "500px",
-          width: "100%",
-          backgroundColor: "blue",
-          marginTop: "5rem",
-        }}
-      ></div>
     </>
   );
 }

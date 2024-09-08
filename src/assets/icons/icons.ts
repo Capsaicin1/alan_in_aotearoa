@@ -2,6 +2,8 @@ import { IoChevronDown as DownArrow } from "react-icons/io5";
 import { IoChevronForward as RightArrow } from "react-icons/io5";
 import { IoChevronBackOutline as LeftArrow } from "react-icons/io5";
 import { IoClose as CloseX } from "react-icons/io5";
+import { IoInformationCircleOutline as InfoCircleOutline } from "react-icons/io5";
+import { IoInformationCircleSharp as InfoCircleFill } from "react-icons/io5";
 
 import { VscTriangleDown } from "react-icons/vsc";
 import { VscTriangleLeft } from "react-icons/vsc";
@@ -17,4 +19,6 @@ export {
   VscTriangleLeft,
   VscTriangleRight,
   VscTriangleUp,
+  InfoCircleFill,
+  InfoCircleOutline,
 };
