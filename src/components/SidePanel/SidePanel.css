@@ -1,0 +1,100 @@
+:root {
+  --bg: #242526;
+  --bg-rgb: rgba(36, 37, 38, 0.308);
+  --bg2: #020302;
+  --bg2-rgb: rgba(2, 3, 2, 0.9);
+  --bg-accent: #484a4d;
+  --text-color: #dadce1;
+  --nav-size: 60px;
+  --border: 1px solid rgba(71, 74, 77, 0.4);
+  --border-radius: 8px;
+  --speed: 500ms;
+  --sidebar-size: 27px;
+  --vh: 100vh;
+  font-family: "Space Grotesk", sans-serif;
+}
+
+.side-panel .side-panel-toggle {
+  width: 30px;
+  height: 60px;
+  position: absolute;
+  top: 45vh;
+  background: var(--bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 10px;
+  border-radius: 10px;
+  border: var(--border);
+  transition: all var(--speed) ease;
+  z-index: 111;
+}
+
+/* .side-panel .side-panel-toggle .active {
+  width: 30px;
+  height: 60px;
+  position: absolute;
+  top: 45vh;
+  background: var(--bg);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  margin: 10px;
+  border-radius: 10px;
+  border: var(--border);
+  transition: all var(--speed) ease;
+  z-index: 111;
+} */
+
+/* .side-panel .side-panel-toggle-active {
+  position: absolute;
+  top: 45vh;
+  background: var(--bg);
+  display: flex;
+  flex-direction: column;
+  margin: 10px;
+  border-radius: 10px;
+  border: var(--border);
+  transition: all var(--speed) ease;
+  z-index: 111;
+} */
+
+.side-panel .side-panel-toggle:hover {
+  transform: scale(1.1);
+}
+
+.side-panel-toggle .side-panel-toggle-closeBtn {
+  border: none;
+  background: none;
+  color: var(--text-color);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  height: 50px;
+}
+
+/* .side-panel-toggle .side-panel-toggle-closeBtn-active {
+  border: none;
+  background: none;
+  color: var(--text-color);
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  cursor: pointer;
+  height: 50px;
+} */
+
+.side-panel-toggle-content {
+  box-sizing: border-box;
+  height: 680px;
+  width: 480px;
+
+  margin-left: 10px;
+  background-color: rgba(255, 255, 255, 0);
+  border: 5px solid white;
+  border-radius: 5px;
+  overflow: hidden;
+
+  transition: background-color 0.2s ease, opacity 0.2s ease;
+}

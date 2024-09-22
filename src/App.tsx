@@ -10,7 +10,7 @@ import { DownArrow } from "./assets/icons/icons.ts";
 import { InfoCircleOutline } from "./assets/icons/icons.ts";
 
 import mapboxgl from "mapbox-gl";
-import SidePanel from "./components/SidePanel.tsx";
+import SidePanel from "./components/SidePanel/SidePanel.tsx";
 mapboxgl.accessToken = import.meta.env.VITE_MAPBOX_API;
 
 /**
@@ -247,11 +247,11 @@ function App() {
           <NavItem text="test" />
           <NavItem text="test" />
         </Nav>
-        <Menu>
+        {/* <Menu>
           <MenuItem icon={<IconComponent icon={DownArrow} />}>
             <Accordion items={accordionData} keepOtherOpen={true} />
           </MenuItem>
-        </Menu>
+        </Menu> */}
         <div className="map">
           <div ref={mapContainer} className="map-container" />
           <SidePanel />
