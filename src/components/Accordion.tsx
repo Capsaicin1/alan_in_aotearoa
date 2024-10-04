@@ -94,3 +94,37 @@ const Accordion: React.FC<AccordionProps> = ({ items, keepOtherOpen }) => {
 };
 
 export default Accordion;
+
+//Array of objects that contain the data for the accordion menu.
+// const accordionData = [
+//   {
+//     id: 0,
+//     label: "Layers",
+//     renderContent: () => (
+//       <div className="button_container">
+//         {activeLayerIDs.map((l) => (
+//           <button key={l} onClick={() => handleLayerToggle(l)}>
+//             {l}
+//           </button>
+//         ))}
+//       </div>
+//     ),
+//   },
+//   {
+//     id: 1,
+//     label: "Legend",
+//     renderContent: () => (
+//       <ol>
+//         <li>List Item</li>
+//         <li>List Item</li>
+//         <li>List Item</li>
+//         <li>List Item</li>
+//       </ol>
+//     ),
+//   },
+//   {
+//     id: 2,
+//     label: "Acknowledgements",
+//     renderContent: () => <p>Ellen Cieraad</p>,
+//   },
+// ];

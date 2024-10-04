@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import IconComponent from "../IconComponent";
-import { RightArrow, LeftArrow } from "../../assets/icons/icons";
-import animations from "./animations";
+import { RightArrow } from "../../assets/icons/icons";
+import panelAnimations from "./panelAnimations";
 import "./SidePanel.css";
 // import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
@@ -30,12 +30,11 @@ const SidePanel = () => {
       const tl = gsap.timeline({ paused: true });
 
       // Animation steps for the panel and close button
-      tl.to(close, animations.closeButtonOne)
-        .to(content, animations.contentOne)
-        .to(panel, animations.panelOne)
-        .to(close, animations.closeButtonTwo)
+      tl.to(content, panelAnimations.contentOne)
+        .to(panel, panelAnimations.panelOne)
+        .to(close, panelAnimations.closeButtonOne)
         .add(() => setContentVisible(true))
-        .to(content, animations.contentTwo);
+        .to(content, panelAnimations.contentTwo);
       // Store the timeline in the reference
       timelineRef.current = tl;
     }
@@ -73,19 +72,11 @@ const SidePanel = () => {
                 : "side-panel-toggle-closeBtn"
             }
           >
-            {open ? (
-              <IconComponent
-                onClick={() => setOpen(!open)}
-                icon={LeftArrow}
-                scale={15}
-              />
-            ) : (
-              <IconComponent
-                onClick={() => setOpen(!open)}
-                icon={RightArrow}
-                scale={15}
-              />
-            )}
+            <IconComponent
+              onClick={() => setOpen(!open)}
+              icon={RightArrow}
+              scale={15}
+            />
           </button>
         </div>
       </div>

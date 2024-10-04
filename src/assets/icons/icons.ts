@@ -5,6 +5,8 @@ import { IoClose as CloseX } from "react-icons/io5";
 import { IoInformationCircleOutline as InfoCircleOutline } from "react-icons/io5";
 import { IoInformationCircleSharp as InfoCircleFill } from "react-icons/io5";
 
+import { FaMapPin as MapPin } from "react-icons/fa";
+
 import { VscTriangleDown } from "react-icons/vsc";
 import { VscTriangleLeft } from "react-icons/vsc";
 import { VscTriangleRight } from "react-icons/vsc";
@@ -21,4 +23,5 @@ export {
   VscTriangleUp,
   InfoCircleFill,
   InfoCircleOutline,
+  MapPin,
 };

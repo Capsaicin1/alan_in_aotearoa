@@ -1,16 +1,17 @@
 import { useState, useRef, useEffect } from "react";
+import { createRoot } from "react-dom/client";
 import "./styles/App.css";
+import geoJSON from "./data/darkSkyLocations.ts";
 
-import { Nav, NavItem } from "./components/Nav";
-import { Menu, MenuItem } from "./components/Menu.tsx";
-import Accordion from "./components/Accordion.tsx";
+import { Nav, NavItem } from "./components/Nav/Nav.tsx";
+import Acknowledgements from "./components/Acknowledgements.tsx";
 
 import IconComponent from "./components/IconComponent";
-import { DownArrow } from "./assets/icons/icons.ts";
-import { InfoCircleOutline } from "./assets/icons/icons.ts";
+import { InfoCircleOutline, MapPin } from "./assets/icons/icons.ts";
+import SidePanel from "./components/SidePanel/SidePanel.tsx";
 
 import mapboxgl from "mapbox-gl";
-import SidePanel from "./components/SidePanel/SidePanel.tsx";
+import { MdHeight } from "react-icons/md";
 mapboxgl.accessToken = import.meta.env.VITE_MAPBOX_API;
 
 /**
@@ -28,6 +29,9 @@ function App() {
   const [defaultZoom, setDefaultZoom] = useState(4);
   const [defaultPitch, setDefaultPitch] = useState(52);
   const [defaultBearing, setDefaultBearing] = useState(-9);
+
+  //State -> For components
+  const [acknowledgeOpen, setAcknowledgeOpen] = useState(false);
 
   //Constants
   const activeLayerIDs = ["NTLChangeAbs", "NTLBrighter"];
@@ -133,11 +137,39 @@ function App() {
       });
     });
 
+    // Add markers to the map to display the dark sky locations
+    for (const feature of geoJSON.features) {
+      // Create div for each element
+      const el = document.createElement("div");
+      el.className = "map-marker";
+
+      const iconDiv = document.createElement("div");
+      iconDiv.className = "icon-div";
+
+      const root = createRoot(iconDiv);
+      root.render(<IconComponent icon={MapPin} color="white" scale={20} />);
+      el.appendChild(iconDiv);
+
+      // Explicitly cast coordinates as tuple [number, number]
+      const coordinates = feature.geometry.coordinates as [number, number];
+
+      // make marker for each feature and add it to the map
+      new mapboxgl.Marker(el)
+        .setLngLat(coordinates)
+        .setPopup(
+          new mapboxgl.Popup({ offset: 25 }) // add popups
+            .setHTML(
+              `<h3>${feature.properties.name}</h3><p>${feature.properties.description}</p>`
+            )
+        )
+        .addTo(map.current);
+    }
+
     // Gets and displays the following values as the user moves the map by updating the state of each variable
     map.current.on("move", () => {
       if (map.current !== null) {
-        setDefaultLng(parseInt(map.current.getCenter().lng.toFixed(4)));
-        setDefaultLat(parseInt(map.current.getCenter().lat.toFixed(4)));
+        setDefaultLng(parseInt(map.current.getCenter().lng.toFixed(10)));
+        setDefaultLat(parseInt(map.current.getCenter().lat.toFixed(10)));
         setDefaultZoom(parseInt(map.current.getZoom().toFixed(2)));
         setDefaultPitch(parseInt(map.current.getPitch().toFixed(2)));
         setDefaultBearing(parseInt(map.current.getBearing().toFixed(3)));
@@ -205,40 +237,6 @@ function App() {
     }
   };
 
-  //Array of objects that contain the data for the accordion menu.
-  const accordionData = [
-    {
-      id: 0,
-      label: "Layers",
-      renderContent: () => (
-        <div className="button_container">
-          {activeLayerIDs.map((l) => (
-            <button key={l} onClick={() => handleLayerToggle(l)}>
-              {l}
-            </button>
-          ))}
-        </div>
-      ),
-    },
-    {
-      id: 1,
-      label: "Legend",
-      renderContent: () => (
-        <ol>
-          <li>List Item</li>
-          <li>List Item</li>
-          <li>List Item</li>
-          <li>List Item</li>
-        </ol>
-      ),
-    },
-    {
-      id: 2,
-      label: "Acknowledgements",
-      renderContent: () => <p>Ellen Cieraad</p>,
-    },
-  ];
-
   return (
     <>
       <div className="content">
@@ -247,20 +245,20 @@ function App() {
           <NavItem text="test" />
           <NavItem text="test" />
         </Nav>
-        {/* <Menu>
-          <MenuItem icon={<IconComponent icon={DownArrow} />}>
-            <Accordion items={accordionData} keepOtherOpen={true} />
-          </MenuItem>
-        </Menu> */}
         <div className="map">
           <div ref={mapContainer} className="map-container" />
           <SidePanel />
+
           <div className="sidebar">
             <span className="sidebar-acknowledgements">
               Data Acknowledgements{" "}
-              <button className="sidebar-acknowledgements-icon">
+              <button
+                onClick={() => setAcknowledgeOpen(!acknowledgeOpen)}
+                className="sidebar-acknowledgements-icon"
+              >
                 <IconComponent icon={InfoCircleOutline} size={18} />
               </button>
+              {acknowledgeOpen ? <Acknowledgements /> : ""}
             </span>
             <span className="sidebar-geo-info">
               <button className="reset-map-view">Reset</button> | Longitude:{" "}

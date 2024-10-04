@@ -1,12 +1,12 @@
-const animations = {
+const panelAnimations = {
   closeButtonOne: {
-    opacity: 0,
+    rotation: -180,
     duration: 0.2,
   },
   closeButtonTwo: {
     opacity: 1,
     duration: 0.15,
-    delay: 0.05,
+    delay: 0,
   },
   panelOne: {
     width: "500px",
@@ -15,9 +15,9 @@ const animations = {
     margin: "10px 60px",
     borderRadius: "15px",
     opacity: 0.95,
-    duration: 0.15,
+    duration: 0.1,
     ease: "circ.in",
-    delay: 0.05,
+    delay: 0,
   },
   contentOne: {
     opacity: 0,
@@ -31,4 +31,4 @@ const animations = {
   },
 };
 
-export default animations;
+export default panelAnimations;
