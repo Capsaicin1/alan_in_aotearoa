@@ -5,13 +5,13 @@ import geoJSON from "./data/darkSkyLocations.ts";
 
 import { Nav, NavItem } from "./components/Nav/Nav.tsx";
 import Acknowledgements from "./components/Acknowledgements.tsx";
+import LoadingSpinner from "./components/loader/LoadingSpinner.tsx";
 
 import IconComponent from "./components/IconComponent";
 import { InfoCircleOutline, MapPin } from "./assets/icons/icons.ts";
 import SidePanel from "./components/SidePanel/SidePanel.tsx";
 
 import mapboxgl from "mapbox-gl";
-import { MdHeight } from "react-icons/md";
 mapboxgl.accessToken = import.meta.env.VITE_MAPBOX_API;
 
 /**
@@ -32,6 +32,8 @@ function App() {
 
   //State -> For components
   const [acknowledgeOpen, setAcknowledgeOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const [spinnerVisible, setSpinnerVisible] = useState(true);
 
   //Constants
   const activeLayerIDs = ["NTLChangeAbs", "NTLBrighter"];
@@ -164,7 +166,6 @@ function App() {
         )
         .addTo(map.current);
     }
-
     // Gets and displays the following values as the user moves the map by updating the state of each variable
     map.current.on("move", () => {
       if (map.current !== null) {
@@ -187,6 +188,14 @@ function App() {
       .querySelector(".reset-map-view")
       ?.addEventListener("click", () => resetMapView());
 
+    // These event listeners listen for events that trigger the loading spinner.
+    map.current.on("load", () => {
+      setTimeout(() => {
+        setIsLoading(false);
+      }, 10000);
+    });
+    map.current.on("idle", () => setIsLoading(false));
+
     return () => {
       if (map.current) {
         map.current.remove();
@@ -195,6 +204,14 @@ function App() {
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  useEffect(() => {
+    if (!isLoading) {
+      setTimeout(() => {
+        setSpinnerVisible(false);
+      }, 500);
+    }
+  }, [isLoading]);
 
   /**
    * Resets the map view to the specified parameters or default values.
@@ -239,6 +256,7 @@ function App() {
 
   return (
     <>
+      {spinnerVisible && <LoadingSpinner />}
       <div className="content">
         <Nav>
           <NavItem text="test" />

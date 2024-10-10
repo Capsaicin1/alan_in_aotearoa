@@ -6,11 +6,12 @@
   --bg-accent: #484a4d;
   --text-color: #dadce1;
   --nav-size: 60px;
-  --border: 1px solid rgba(71, 74, 77, 0.4);
+  --border: 1px solid rgb(71, 74, 77);
   --border-radius: 8px;
   --speed: 500ms;
   --sidebar-size: 27px;
   --vh: 100vh;
+  --checked: #a8c7fa;
   font-family: "Space Grotesk", sans-serif;
 }
 
@@ -88,13 +89,100 @@
 .side-panel-toggle-content {
   box-sizing: border-box;
   height: 680px;
-  width: 480px;
+  width: 330px;
 
   margin-left: 10px;
   background-color: rgba(255, 255, 255, 0);
-  border: 5px solid white;
+  /* border: 1px solid white; */
   border-radius: 5px;
   overflow: hidden;
 
   transition: background-color 0.2s ease, opacity 0.2s ease;
+}
+
+.layers-collapsible {
+  border-bottom: var(--border);
+  transition: all 1s ease;
+}
+
+.layers-collapsible .flex-wrapper {
+  display: flex;
+  padding: 0px 0px 0px 10px;
+  justify-content: space-between;
+  cursor: pointer;
+}
+
+.flex-wrapper h3 {
+  color: var(--text-color);
+  font-family: "Inter", sans-serif;
+}
+
+.flex-wrapper .direction-indicator {
+  color: var(--text-color);
+  font-family: "Inter", sans-serif;
+  display: flex;
+  font-size: 20px;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.content-parent {
+  transition: all 0.5s ease;
+  box-sizing: border-box;
+  padding-bottom: 10px;
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.content-parent .content {
+  display: flex;
+  flex-direction: column;
+}
+
+.content .divider {
+  margin: 10px 0px;
+  border-bottom: var(--border);
+}
+
+.content-parent .content .content-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 1px 0px 1px 10px;
+  font-family: "Inter", sans-serif;
+  font-size: 14px;
+  color: #cdcdce;
+}
+
+.btn-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.content-item .custom-radio-btn {
+  width: 15px;
+  height: 15px;
+  border: 2px solid #b1b2b4;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.content-item .custom-radio-btn .checkmark {
+  width: calc(100% - 6px);
+  height: calc(100% - 6px);
+  border-radius: 50%;
+  background-color: #222;
+  display: inline-block;
+  opacity: 0;
+  transition: opacity 0.5s ease;
+}
+
+.custom-radio-btn input {
+  display: none;
+}
+
+.custom-radio-btn input:checked + .checkmark {
+  opacity: 1;
+  background-color: var(--checked);
 }

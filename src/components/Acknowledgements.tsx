@@ -1,4 +1,3 @@
-import React from "react";
 import "./Acknowledgements.css";
 
 const Acknowledgements = () => {
@@ -35,7 +34,13 @@ const Acknowledgements = () => {
             target="_blank"
             href="https://ladsweb.modaps.eosdis.nasa.gov/missions-and-measurements/products/VNP46A4"
           >
-            VIIRS/NPP Lunar BRDF-Adjusted Nighttime Lights Yearly
+            VIIRS/NPP Lunar BRDF-Adjusted Nighttime Lights Yearly.
+          </a>
+        </p>
+        <p>
+          Dark Sky - Data on dark sky locations in New Zealand available{" "}
+          <a target="_blank" href="https://darksky.org/">
+            here.
           </a>
         </p>
       </div>

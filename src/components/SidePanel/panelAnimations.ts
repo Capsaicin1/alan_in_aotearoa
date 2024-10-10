@@ -9,7 +9,7 @@ const panelAnimations = {
     delay: 0,
   },
   panelOne: {
-    width: "500px",
+    width: "350px",
     height: "700px",
     y: -300,
     margin: "10px 60px",
