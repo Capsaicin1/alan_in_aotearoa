@@ -18,7 +18,7 @@ const LoadingSpinner = () => {
 
   return (
     <div ref={spinnerRef} className="spinner">
-      <img src="/Spinner.svg" alt="Loading Spinner" />
+      <img src="/Spinner2.svg" alt="Loading Spinner" />
     </div>
   );
 };

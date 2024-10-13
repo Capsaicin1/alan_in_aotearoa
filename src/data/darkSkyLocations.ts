@@ -7,7 +7,7 @@ interface Place {
     lng: number;
   };
   description: string;
-  category: "Sanctuary" | "Reserve" | "Park"; // Restrict cat with union type.
+  category: "Dark Sky Sanctuaries" | "Dark Sky Reserves" | "Dark Sky Parks"; // Restrict cat with union type.
 }
 
 // Array of places, each representing a Dark Sky location.
@@ -17,49 +17,49 @@ const places: Place[] = [
     name: "Aotea Great Barrier Island",
     location: { lat: -36.2, lng: 175.416667 },
     description: "Placeholder for description",
-    category: "Sanctuary",
+    category: "Dark Sky Sanctuaries",
   },
   {
     name: "Kaikōura",
     location: { lat: -42.4, lng: 173.68 },
     description: "Placeholder for description",
-    category: "Sanctuary",
+    category: "Dark Sky Sanctuaries",
   },
   {
     name: "Steward Island",
     location: { lat: -47, lng: 167.84 },
     description: "Placeholder for description",
-    category: "Sanctuary",
+    category: "Dark Sky Sanctuaries",
   },
   {
     name: "Wairarapa International Dark Sky Reserve",
     location: { lat: -41.16, lng: 175.4 },
     description: "Placeholder for description",
-    category: "Reserve",
+    category: "Dark Sky Reserves",
   },
   {
     name: "Aoraki Mackenzie Dark Sky Reserve",
     location: { lat: -43.595, lng: 170.1418 },
     description: "Placeholder for description",
-    category: "Reserve",
+    category: "Dark Sky Reserves",
   },
   {
     name: "Wai-iti Dark Sky Park",
     location: { lat: -41.4299, lng: 172.9933 },
     description: "Placeholder for description",
-    category: "Park",
+    category: "Dark Sky Parks",
   },
   {
     name: "Oxford Forest Conservation Area",
     location: { lat: -43.1341, lng: 172.0303 },
     description: "Placeholder for description",
-    category: "Park",
+    category: "Dark Sky Parks",
   },
   {
     name: "Kawarau Gibbston Dark Sky Park",
     location: { lat: -45.0132, lng: 168.5723 },
     description: "Placeholder for description",
-    category: "Park",
+    category: "Dark Sky Parks",
   },
 ];
 
@@ -89,6 +89,6 @@ const generateGeoJSON = (places: Place[]) => ({
 
 // Generate the GeoJSON from the places array and log it to the console for use in Mapbox.
 const geoJSON = generateGeoJSON(places);
-console.log(JSON.stringify(geoJSON, null, 2));
+// console.log(JSON.stringify(geoJSON, null, 2));
 
 export default geoJSON;

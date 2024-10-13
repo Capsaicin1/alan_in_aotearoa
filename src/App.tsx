@@ -34,9 +34,12 @@ function App() {
   const [acknowledgeOpen, setAcknowledgeOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [spinnerVisible, setSpinnerVisible] = useState(true);
+  const [selectedLayer, setSelectedLayer] = useState<string>(() => {
+    return localStorage.getItem("selectedDarkSkyLayer") || "Toggle All";
+  });
 
   //Constants
-  const activeLayerIDs = ["NTLChangeAbs", "NTLBrighter"];
+  // const activeLayerIDs = ["NTLChangeAbs", "NTLBrighter"];
   const style = "mapbox://styles/julesishomie/clwycze8h019801pp1qto1bwq";
 
   //Object containing colours for the map styling
@@ -51,6 +54,14 @@ function App() {
       "rgba(255, 0, 255, 1)", //FF00FF Pink
     ],
   };
+
+  const darkSkyLayerCategories = [
+    "Toggle All",
+    "Dark Sky Reserves",
+    "Dark Sky Sanctuaries",
+    "Dark Sky Parks",
+    "None",
+  ];
 
   useEffect(() => {
     //initialize map only once
@@ -144,6 +155,7 @@ function App() {
       // Create div for each element
       const el = document.createElement("div");
       el.className = "map-marker";
+      el.setAttribute("data-category", feature.properties.category);
 
       const iconDiv = document.createElement("div");
       iconDiv.className = "icon-div";
@@ -206,6 +218,10 @@ function App() {
   }, []);
 
   useEffect(() => {
+    updateMarkers(selectedLayer);
+  }, [selectedLayer]);
+
+  useEffect(() => {
     if (!isLoading) {
       setTimeout(() => {
         setSpinnerVisible(false);
@@ -240,18 +256,89 @@ function App() {
     }
   };
 
-  /**
-   * Toggles the layers visibility on and off when called.
-   * @param layerID
-   */
-  const handleLayerToggle = (layerID: string) => {
-    const visibility = map.current?.getLayoutProperty(layerID, "visibility");
+  // /**
+  //  * Toggles the layers visibility on and off when called.
+  //  * @param layerID
+  //  */
+  // const handleLayerToggle = (layerID: string) => {
+  //   const visibility = map.current?.getLayoutProperty(layerID, "visibility");
 
-    if (visibility === "visible") {
-      map.current?.setLayoutProperty(layerID, "visibility", "none");
-    } else {
-      map.current?.setLayoutProperty(layerID, "visibility", "visible");
-    }
+  //   if (visibility === "visible") {
+  //     map.current?.setLayoutProperty(layerID, "visibility", "none");
+  //   } else {
+  //     map.current?.setLayoutProperty(layerID, "visibility", "visible");
+  //   }
+  // };
+
+  const handleDarkSkyLayerSelect = (layerId: string) => {
+    setSelectedLayer(layerId);
+    localStorage.setItem("selectedDarkSkyLayer", layerId);
+  };
+
+  const updateMarkers = (layer: string) => {
+    const allMarkers = document.querySelectorAll(".map-marker");
+    console.log(`Number of markers: ${allMarkers.length}`);
+    // First, hide all markers
+    geoJSON.features.forEach((feature) => {
+      const markerElement = document.querySelector(
+        `[data-category="${feature.properties.category}"]`
+      ) as HTMLElement;
+      if (markerElement) {
+        markerElement.style.display = "none"; // Hide initially
+      }
+    });
+
+    // Now show the selected category
+    geoJSON.features.forEach((feature) => {
+      const markerElement = document.querySelector(
+        `[data-category="${feature.properties.category}"]`
+      ) as HTMLElement;
+
+      if (markerElement) {
+        console.log(
+          `Marker for category: ${feature.properties.category}, Display: ${markerElement.style.display}`
+        );
+        switch (layer) {
+          case darkSkyLayerCategories[0]: // Toggle All
+            markerElement.style.display = "block";
+            break;
+          case darkSkyLayerCategories[1]: // Dark Sky Reserves
+            markerElement.style.display =
+              feature.properties.category === "Dark Sky Reserves"
+                ? "block"
+                : "none";
+            break;
+          case darkSkyLayerCategories[2]: // Dark Sky Sanctuaries
+            markerElement.style.display =
+              feature.properties.category === "Dark Sky Sanctuaries"
+                ? "block"
+                : "none";
+            break;
+          case darkSkyLayerCategories[3]: // Dark Sky Parks
+            markerElement.style.display =
+              feature.properties.category === "Dark Sky Parks"
+                ? "block"
+                : "none";
+            break;
+          case darkSkyLayerCategories[4]: // None
+            markerElement.style.display = "none";
+            break;
+          default:
+            markerElement.style.display = "none";
+            break;
+        }
+      } else {
+        console.log(
+          `Marker for category ${feature.properties.category} not found.`
+        );
+      }
+    });
+
+    // Debug: log visible markers
+    const visibleMarkers = Array.from(allMarkers).filter(
+      (marker) => marker.style.display === "block"
+    );
+    console.log(`Visible markers: ${visibleMarkers.length}`, visibleMarkers);
   };
 
   return (
@@ -265,7 +352,7 @@ function App() {
         </Nav>
         <div className="map">
           <div ref={mapContainer} className="map-container" />
-          <SidePanel />
+          <SidePanel onLayerSelect={handleDarkSkyLayerSelect} />
 
           <div className="sidebar">
             <span className="sidebar-acknowledgements">
