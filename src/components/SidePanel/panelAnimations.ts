@@ -15,7 +15,7 @@ const panelAnimations = {
     margin: "10px 60px",
     borderRadius: "15px",
     opacity: 0.95,
-    duration: 0.1,
+    duration: 0.05,
     ease: "circ.in",
     delay: 0,
   },

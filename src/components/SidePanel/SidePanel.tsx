@@ -10,12 +10,24 @@ gsap.registerPlugin(ScrollTrigger);
 // Define types for layer IDs
 interface LayersCollapsibleProps {
   darkSkyLayerIDs: string[];
-  viirsLayerIDs: string[];
+  viirsLayerIDs: viirsLayer[];
   isAccordionOpen: boolean;
   setIsAccordionOpen: (state: boolean) => void;
   selectedDarkSkyCat: string;
   setSelectedDarkSkyCat: (layer: string) => void;
-  onLayerSelect: (layer: string) => void;
+
+  selectedNTLlayer: string;
+  setSelectedNTLlayer: (layer: string) => void;
+
+  selectedVIIRSlayer: string;
+  setSelectedVIIRSlayer: (layer: string) => void;
+
+  onLayerSelect: (changes: change[]) => void;
+}
+
+interface viirsLayer {
+  label: string;
+  id: string;
 }
 
 const darkSkyLayerIDs: string[] = [
@@ -26,22 +38,31 @@ const darkSkyLayerIDs: string[] = [
   "None",
 ];
 
+const changeLayerIds = ["NTLBrighter", "NTLDarker", "None"];
+
 const toggleAll = "Toggle All";
 
-const viirsLayerIDs: string[] = [
-  "VIIRS 2023",
-  "VIIRS 2022",
-  "VIIRS 2021",
-  "VIIRS 2020",
-  "VIIRS 2019",
-  "VIIRS 2018",
-  "VIIRS 2017",
-  "VIIRS 2016",
-  "VIIRS 2015",
-  "VIIRS 2014",
-  "VIIRS 2013",
-  "VIIRS 2012",
+const viirsLayerIDs: viirsLayer[] = [
+  { label: "VIIRS 2012", id: "2012" },
+  { label: "VIIRS 2013", id: "2013" },
+  { label: "VIIRS 2014", id: "2014" },
+  { label: "VIIRS 2015", id: "2015" },
+  { label: "VIIRS 2016", id: "2016" },
+  { label: "VIIRS 2017", id: "2017" },
+  { label: "VIIRS 2018", id: "2018" },
+  { label: "VIIRS 2019", id: "2019" },
+  { label: "VIIRS 2020", id: "2020" },
+  { label: "VIIRS 2021", id: "2021" },
+  { label: "VIIRS 2022", id: "2022" },
+  { label: "VIIRS 2023", id: "2023" },
+  { label: "None", id: "none" },
 ];
+
+interface change {
+  layerID: string;
+  flag: "dks" | "vis" | "ntl";
+}
+const layerChanges: change[] = [];
 
 const LayersCollapsible = ({
   darkSkyLayerIDs,
@@ -50,7 +71,11 @@ const LayersCollapsible = ({
   setIsAccordionOpen,
   selectedDarkSkyCat,
   setSelectedDarkSkyCat,
+  setSelectedNTLlayer,
+  selectedNTLlayer,
   onLayerSelect,
+  selectedVIIRSlayer,
+  setSelectedVIIRSlayer,
 }: LayersCollapsibleProps) => {
   const layerHeadingRef = useRef<HTMLDivElement>(null);
 
@@ -102,7 +127,9 @@ const LayersCollapsible = ({
                         checked={selectedDarkSkyCat === layerId}
                         onChange={() => {
                           setSelectedDarkSkyCat(layerId);
-                          onLayerSelect(layerId);
+                          // onLayerSelect(layerId);
+                          layerChanges.push({ layerID: layerId, flag: "dks" });
+                          console.log(layerChanges);
                           //Save the selected item to local storage
                           localStorage.setItem("selectedDarkSkyCat", layerId);
                         }}
@@ -113,7 +140,7 @@ const LayersCollapsible = ({
                 </div>
               ))}
               <div className="divider"></div>
-              {viirsLayerIDs.map((layerId) => (
+              {changeLayerIds.map((layerId) => (
                 <div className="content-item" key={layerId}>
                   <p>{layerId}</p>
                   <div className="btn-container">
@@ -121,8 +148,43 @@ const LayersCollapsible = ({
                       <input
                         className={`${layerId}-btn`}
                         type="radio"
-                        name="VIIRS"
+                        name="overallChange"
                         id={layerId}
+                        checked={selectedNTLlayer === layerId}
+                        onChange={() => {
+                          setSelectedNTLlayer(layerId);
+                          // onLayerSelect(layerId);
+                          layerChanges.push({ layerID: layerId, flag: "ntl" });
+                          console.log(layerChanges);
+                          localStorage.setItem("selectedNTLlayer", layerId);
+                          console.log(selectedNTLlayer);
+                        }}
+                      />
+                      <span className="checkmark"></span>
+                    </label>
+                  </div>
+                </div>
+              ))}
+              <div className="divider"></div>
+              {viirsLayerIDs.map(({ label, id }) => (
+                <div className="content-item" key={`${label} ${id}`}>
+                  <p>{label}</p>
+                  <div className="btn-container">
+                    <label className="custom-radio-btn">
+                      <input
+                        className={`${label}-btn`}
+                        type="radio"
+                        name="VIIRS"
+                        id={id}
+                        checked={selectedVIIRSlayer === id}
+                        onChange={() => {
+                          setSelectedVIIRSlayer(id);
+                          // onLayerSelect(id);
+                          layerChanges.push({ layerID: id, flag: "vis" });
+                          console.log(layerChanges);
+                          localStorage.setItem("selectedVIIRSlayer", id);
+                          console.log(`Selected: ${selectedVIIRSlayer}`);
+                        }}
                       />
                       <span className="checkmark"></span>
                     </label>
@@ -140,7 +202,7 @@ const LayersCollapsible = ({
 const SidePanel = ({
   onLayerSelect,
 }: {
-  onLayerSelect: (layerId: string) => void; // Expect a callback as a prop
+  onLayerSelect: (changes: change[]) => void; // Expect a callback as a prop
 }) => {
   const [open, setOpen] = useState(false);
   const [contentVisible, setContentVisible] = useState(false);
@@ -149,6 +211,14 @@ const SidePanel = ({
   // State controls selected layer, initialized from localStorage or defaults to "Toggle All". This allows the layer a user selected to persist over multiple sessions.
   const [selectedDarkSkyCat, setSelectedDarkSkyCat] = useState<string>(
     () => localStorage.getItem("selectedDarkSkyCat") || toggleAll
+  );
+
+  const [selectedNTLlayer, setSelectedNTLlayer] = useState<string>(
+    () => localStorage.getItem("selectedNTLlayer") || "None"
+  );
+
+  const [selectedVIIRSlayer, setSelectedVIIRSlayer] = useState<string>(
+    () => localStorage.getItem("selectedVIIRSlayer") || "none"
   );
 
   const panelRef = useRef<HTMLDivElement>(null);
@@ -199,6 +269,10 @@ const SidePanel = ({
                 setIsAccordionOpen={setIsAccordionOpen}
                 selectedDarkSkyCat={selectedDarkSkyCat}
                 setSelectedDarkSkyCat={setSelectedDarkSkyCat}
+                setSelectedNTLlayer={setSelectedNTLlayer}
+                selectedNTLlayer={selectedNTLlayer}
+                selectedVIIRSlayer={selectedVIIRSlayer}
+                setSelectedVIIRSlayer={setSelectedVIIRSlayer}
                 onLayerSelect={onLayerSelect}
               />
             </div>

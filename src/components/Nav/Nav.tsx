@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
+import { Link } from "react-router-dom";
 import "../Nav/Nav.css";
 import { gsap } from "gsap";
 import { useGSAP } from "@gsap/react";
@@ -84,9 +85,9 @@ function Nav(props: React.PropsWithChildren) {
   return (
     <>
       <div className={scroll ? "navbar scrolled" : "navbar"}>
-        <a className="logo" href="#">
+        <Link className="logo" to="/">
           Aotearoa
-        </a>
+        </Link>
         {/* Navigation items, passed as children from parent component */}
         <ul className="navbar-nav"> {props.children} </ul>
         <div
@@ -108,19 +109,20 @@ function Nav(props: React.PropsWithChildren) {
 }
 
 // Navigation item component to render individual links in the navigation bar
-function NavItem(props: navItemProps) {
+function NavItem({ content, path }: navItemProps) {
   return (
     <li className="nav-item">
-      <a href="#" className="icon-button">
-        {props.text}
-      </a>
+      <Link to={path} className="icon-button">
+        {content}
+      </Link>
     </li>
   );
 }
 
 // Type definition for NavItem props
-type navItemProps = {
-  text: string;
-};
+interface navItemProps {
+  content: string;
+  path: string;
+}
 
 export { Nav, NavItem };
