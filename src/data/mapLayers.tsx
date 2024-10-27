@@ -66,7 +66,7 @@ const layers: Layers = {
         name: "viirs2012",
         id: "2012",
         layerType: "raster",
-        url: "julesishomie.4uirg4op",
+        url: "mapbox://julesishomie.4uirg4op",
       },
     },
     {
@@ -75,7 +75,7 @@ const layers: Layers = {
         name: "viirs2013",
         id: "2013",
         layerType: "raster",
-        url: "julesishomie.b9krrxvj",
+        url: "mapbox://julesishomie.b9krrxvj",
       },
     },
     {
@@ -84,7 +84,7 @@ const layers: Layers = {
         name: "viirs2014",
         id: "2014",
         layerType: "raster",
-        url: "julesishomie.bptwd62a",
+        url: "mapbox://julesishomie.bptwd62a",
       },
     },
     {
@@ -93,7 +93,7 @@ const layers: Layers = {
         name: "viirs2015",
         id: "2015",
         layerType: "raster",
-        url: "julesishomie.73ylq10w",
+        url: "mapbox://julesishomie.73ylq10w",
       },
     },
     {
@@ -102,7 +102,7 @@ const layers: Layers = {
         name: "viirs2016",
         id: "2016",
         layerType: "raster",
-        url: "julesishomie.54wyr09q",
+        url: "mapbox://julesishomie.54wyr09q",
       },
     },
     {
@@ -111,7 +111,7 @@ const layers: Layers = {
         name: "viirs2017",
         id: "2017",
         layerType: "raster",
-        url: "julesishomie.6lp07q15",
+        url: "mapbox://julesishomie.6lp07q15",
       },
     },
     {
@@ -120,7 +120,7 @@ const layers: Layers = {
         name: "viirs2018",
         id: "2018",
         layerType: "raster",
-        url: "julesishomie.1ia03hst",
+        url: "mapbox://julesishomie.1ia03hst",
       },
     },
     {
@@ -129,7 +129,7 @@ const layers: Layers = {
         name: "viirs2019",
         id: "2019",
         layerType: "raster",
-        url: "julesishomie.6xbgebk1",
+        url: "mapbox://julesishomie.6xbgebk1",
       },
     },
     {
@@ -138,7 +138,7 @@ const layers: Layers = {
         name: "viirs2020",
         id: "2020",
         layerType: "raster",
-        url: "julesishomie.1b7qk9go",
+        url: "mapbox://julesishomie.1b7qk9go",
       },
     },
     {
@@ -147,7 +147,7 @@ const layers: Layers = {
         name: "viirs2021",
         id: "2021",
         layerType: "raster",
-        url: "julesishomie.cis1kxze",
+        url: "mapbox://julesishomie.cis1kxze",
       },
     },
     {
@@ -156,7 +156,7 @@ const layers: Layers = {
         name: "viirs2022",
         id: "2022",
         layerType: "raster",
-        url: "julesishomie.1hnkwvqh",
+        url: "mapbox://julesishomie.1hnkwvqh",
       },
     },
     {
@@ -165,7 +165,7 @@ const layers: Layers = {
         name: "viirs2023",
         id: "2023",
         layerType: "raster",
-        url: "julesishomie.9ygumx4u",
+        url: "mapbox://julesishomie.9ygumx4u",
       },
     },
   ],

@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from "react";
 import { createRoot } from "react-dom/client";
 import "../styles/App.css";
 import geoJSON from "../data/darkSkyLocations.ts";
+import paint from "../data/mapStyles.ts";
 import { layers } from "../data/mapLayers.tsx";
 
 import { Nav, NavItem } from "../components/Nav/Nav.tsx";
@@ -36,26 +37,21 @@ function App() {
   const [isLoading, setIsLoading] = useState(true);
   const [spinnerVisible, setSpinnerVisible] = useState(true);
   // const [refreshMarkers, setRefreshMarkers] = useState(false);
-  const [selectedLayer, setSelectedLayer] = useState<string>(() => {
+  const [selectedDSlayer, setSelectedDSLayer] = useState<string>(() => {
     return localStorage.getItem("selectedDarkSkyLayer") || "Toggle All";
+  });
+
+  const [selectedNTLlayer, setSelectedNTLlayer] = useState<string>(() => {
+    return localStorage.getItem("selectedNTLlayer") || "None";
+  });
+
+  const [selectedVISlayer, setSelectedVISlayer] = useState<string>(() => {
+    return localStorage.getItem("selectedVISlayer") || "none";
   });
 
   //Constants
   // const activeLayerIDs = ["NTLChangeAbs", "NTLBrighter"];
   const style = "mapbox://styles/julesishomie/clwycze8h019801pp1qto1bwq";
-
-  //Object containing colours for the map styling
-  const colors = {
-    gradient: [
-      "rgba(0, 0, 0, 0)", // nothing
-      "rgba(0, 255, 0, 0)", //Green but a = 0, so 0 opacity
-      "rgba(127, 255, 127, 0)", //#7FFF7F Light green
-      "rgba(255, 255, 255, 1)", //#FFFFFF White
-      "rgba(255, 127, 127, 1)", //#FF7F7F Light Pink
-      "rgba(255, 0, 0, 1)", //FF0000 Red
-      "rgba(255, 0, 255, 1)", //FF00FF Pink
-    ],
-  };
 
   const darkSkyLayerCategories = [
     "Toggle All",
@@ -64,6 +60,33 @@ function App() {
     "Dark Sky Parks",
     "None",
   ];
+
+  const NTLlayersIDs = [
+    layers.overallChangeLayers[0].layer.id, // Brighter
+    layers.overallChangeLayers[1].layer.id, //Darker
+    "None",
+  ];
+
+  const VISlayerIDs = [
+    layers.viirsLayers[0].layer.id, //2012
+    layers.viirsLayers[1].layer.id, //2013
+    layers.viirsLayers[2].layer.id, //2014
+    layers.viirsLayers[3].layer.id, //2015
+    layers.viirsLayers[4].layer.id, //2016
+    layers.viirsLayers[5].layer.id, //2017
+    layers.viirsLayers[6].layer.id, //2018
+    layers.viirsLayers[7].layer.id, //2019
+    layers.viirsLayers[8].layer.id, //2020
+    layers.viirsLayers[9].layer.id, //2021
+    layers.viirsLayers[10].layer.id, //2022
+    layers.viirsLayers[11].layer.id, //2023
+    "none",
+  ];
+
+  interface change {
+    layerID: string;
+    flag: "dks" | "vis" | "ntl";
+  }
 
   const markerMap: { [category: string]: mapboxgl.Marker[] } = {};
 
@@ -99,12 +122,8 @@ function App() {
           tileSize: 256,
         });
       });
-      // map.current.addSource("test", {
-      //   type: "raster",
-      //   url: "mapbox://julesishomie.4uirg4op",
-      //   tileSize: 256,
-      // });
 
+      console.log(map.current.getStyle().layers);
       //Checks that the raster is loaded, and that is not already loaded, before adding it to the map.
       map.current.on("data", (e) => {
         if (e.isSourceLoaded) {
@@ -115,10 +134,11 @@ function App() {
               source: layer.name,
               type: "raster",
               layout: {
-                visibility: "none",
+                visibility: "visible",
               },
+              paint: layer.id === "NTLBrighter" ? paint.brighter : paint.darker,
             });
-            console.log(`Just added ${layer.name}`);
+            // console.log(`Just added ${layer.name}`);
           });
 
           layers.viirsLayers.map(({ layer }) => {
@@ -126,12 +146,44 @@ function App() {
             map.current?.addLayer({
               id: layer.id,
               source: layer.name,
+              maxzoom: 15,
+              minzoom: 0,
               type: "raster",
               layout: {
-                visibility: "none",
+                visibility: "visible",
+              },
+              paint: {
+                "raster-opacity": 0.8,
+                "raster-color": [
+                  "interpolate", // This defines the interpolation expression
+                  ["linear"], // The interpolation method
+                  ["raster-value"], // The property being used for the color interpolation
+                  0,
+                  "rgba(0, 0, 0, 0)", // Mapping values to colors
+                  20,
+                  "hsl(240, 100%, 70%)",
+                  40,
+                  "hsl(180, 100%, 50%)",
+                  60,
+                  "hsl(120, 100%, 60%)",
+                  80,
+                  "hsl(120, 100%, 30%)",
+                  100,
+                  "hsl(60, 100%, 60%)",
+                  140,
+                  "hsl(60, 100%, 40%)",
+                  180,
+                  "hsl(30, 100%, 50%)",
+                  220,
+                  "hsl(0, 100%, 50%)",
+                  234,
+                  "hsl(0, 100%, 30%)",
+                ],
+                "raster-color-mix": [255, 0, 0, 1], // Make sure this is compatible
+                "raster-color-range": [0, 234],
               },
             });
-            console.log(`Just added ${layer.name}`);
+            // console.log(`Just added ${layer.name}`);
           });
           // if (!map.current?.getLayer("NTLChangeAbs")) {
           //   map.current?.addLayer({
@@ -141,90 +193,9 @@ function App() {
           //     layout: {
           //       visibility: "none",
           //     },
-          //     //
-          //     paint: {
-          //       "raster-color": [
-          //         "interpolate",
-          //         ["linear"],
-          //         ["raster-value"],
-          //         0,
-          //         colors.gradient[0],
-          //         23,
-          //         colors.gradient[1],
-          //         46,
-          //         colors.gradient[2],
-          //         69,
-          //         colors.gradient[3],
-          //         92,
-          //         colors.gradient[4],
-          //         115,
-          //         colors.gradient[5],
-          //         138,
-          //         colors.gradient[6],
-          //       ],
-          //       "raster-color-mix": [255, 0, 0, 1],
-          //       "raster-color-range": [0, 138],
-          //     },
+          //     /
           //   });
           //   console.log("raster is loaded");
-          // }
-          // if (!map.current?.getLayer("test")) {
-          //   map.current?.addLayer({
-          //     id: "test",
-          //     source: "test",
-          //     type: "raster",
-          //     layout: {
-          //       visibility: "visible",
-          //     },
-          //     paint: {
-          //       "raster-opacity": 0.8,
-          //       "raster-color": [
-          //         "interpolate",
-          //         ["linear"],
-          //         ["raster-value"],
-          //         0,
-          //         "rgba(0, 0, 0, 0)", // Transparent for value 0
-          //         20,
-          //         "hsl(240, 100%, 70%)", // Light Blue for very low values
-          //         40,
-          //         "hsl(180, 100%, 50%)", // Cyan for low values
-          //         60,
-          //         "hsl(120, 100%, 60%)", // Brighter Green for mid-low values
-          //         80,
-          //         "hsl(120, 100%, 30%)", // Darker Green for mid-range
-          //         100,
-          //         "hsl(60, 100%, 60%)", // Brighter Yellow for higher mid-range
-          //         140,
-          //         "hsl(60, 100%, 40%)", // Darker Yellow for higher mid-range
-          //         180,
-          //         "hsl(30, 100%, 50%)", // Orange for upper mid-range
-          //         220,
-          //         "hsl(0, 100%, 50%)", // Red for high values
-          //         234,
-          //         "hsl(0, 100%, 30%)", // Dark Red for max value (234)
-          //       ],
-          //       "raster-color-mix": [255, 0, 0, 1],
-          //       "raster-color-range": [0, 234],
-          //     },
-          //   });
-          // }
-          //Adds layer & checks if the layer exists already
-          // if (!map.current?.getLayer("NTLBrighter")) {
-          //   map.current?.addLayer({
-          //     id: "NTLBrighter",
-          //     source: "NTLBrighter_tileset",
-          //     type: "raster",
-          //     layout: {
-          //       visibility: "none",
-          //     },
-          //     paint: {
-          //       "raster-color": "rgba(255,234,0,1)",
-          //       "raster-opacity": 0.8, // Slightly transparent to give a glowing effect
-          //       "raster-brightness-max": 1,
-          //       "raster-contrast": 0.7,
-          //     },
-          //   });
-          // }
         }
       });
     });
@@ -261,7 +232,7 @@ function App() {
       markerMap[feature.properties.category].push(marker);
 
       // Add marker to map initially if 'Toggle All" is selected
-      if (selectedLayer === "Toggle All") {
+      if (selectedDSlayer === "Toggle All") {
         marker.addTo(map.current!);
       }
     }
@@ -305,9 +276,40 @@ function App() {
   }, []);
 
   useEffect(() => {
-    console.log(`Layer updated to: ${selectedLayer}`);
-    updateMarkers(selectedLayer);
-  }, [selectedLayer]);
+    console.log(`DS layer updated to: ${selectedDSlayer}`);
+
+    if (!map.current?.isStyleLoaded()) {
+      map.current?.on("style.load", () => {
+        updateMarkers(selectedDSlayer);
+      });
+    } else {
+      updateMarkers(selectedDSlayer);
+    }
+  }, [selectedDSlayer]);
+
+  useEffect(() => {
+    console.log(`NTL layer updated to ${selectedNTLlayer}`);
+
+    if (!map.current?.isStyleLoaded()) {
+      map.current?.on("style.load", () => {
+        updateNTLlayers(selectedNTLlayer);
+      });
+    } else {
+      updateNTLlayers(selectedNTLlayer);
+    }
+  }, [selectedNTLlayer]);
+
+  useEffect(() => {
+    console.log(`VIS layer updated to ${selectedVISlayer}`);
+
+    if (!map.current?.isStyleLoaded()) {
+      map.current?.on("style.load", () => {
+        updateVISlayers(selectedVISlayer);
+      });
+    } else {
+      updateVISlayers(selectedVISlayer);
+    }
+  }, [selectedVISlayer]);
 
   useEffect(() => {
     if (!isLoading) {
@@ -358,15 +360,23 @@ function App() {
   //   }
   // };
 
-  const handleDarkSkyLayerSelect = (layerId: string) => {
-    setSelectedLayer(layerId);
-    localStorage.setItem("selectedDarkSkyLayer", layerId);
-
-    // setRefreshMarkers((prev) => !prev);
+  const recordChanges = (changes: change[]) => {
+    changes.forEach((change) => {
+      if (change.flag === "dks") {
+        setSelectedDSLayer(change.layerID);
+        localStorage.setItem("selectedDarkSkyLayer", change.layerID);
+      } else if (change.flag === "ntl") {
+        setSelectedNTLlayer(change.layerID);
+        localStorage.setItem("selectedNTLlayer", change.layerID);
+      } else if (change.flag === "vis") {
+        setSelectedVISlayer(change.layerID);
+        localStorage.setItem("selectedVISlayer", change.layerID);
+      }
+    });
   };
 
   const updateMarkers = (layer: string) => {
-    console.log(`Updating markers for category: ${layer}`);
+    // console.log(`Updating markers for category: ${layer}`);
 
     //Remove all markers from the map
     Object.values(markerMap).forEach((markers) => {
@@ -402,68 +412,169 @@ function App() {
       default:
         break;
     }
+  };
 
-    // First, hide all markers
-    // geoJSON.features.forEach((feature) => {
-    //   const markerElement = document.querySelector(
-    //     `[data-category="${feature.properties.category}"]`
-    //   ) as HTMLElement;
-    //   if (markerElement) {
-    //     markerElement.style.display = "none"; // Hide initially
-    //   }
-    // });
+  const updateNTLlayers = (layer: string) => {
+    if (map.current?.getLayer(layer)) {
+      if (layer === NTLlayersIDs[0]) {
+        map.current?.setLayoutProperty(NTLlayersIDs[1], "visibility", "none");
+        map.current?.setLayoutProperty(
+          NTLlayersIDs[0],
+          "visibility",
+          "visible"
+        );
+      } else if (layer === NTLlayersIDs[1]) {
+        map.current?.setLayoutProperty(NTLlayersIDs[0], "visibility", "none");
+        map.current?.setLayoutProperty(
+          NTLlayersIDs[1],
+          "visibility",
+          "visible"
+        );
+      } else if (layer === NTLlayersIDs[2]) {
+        map.current?.setLayoutProperty(NTLlayersIDs[0], "visibility", "none");
+        map.current?.setLayoutProperty(
+          NTLlayersIDs[0],
+          "visibility",
+          "visible"
+        );
+      }
+    } else {
+      console.warn(`Layer '${layer}' does not exist in the map's style.`);
+    }
+  };
 
-    // Now show the selected category
-    // geoJSON.features.forEach((feature) => {
-    //   const markerElement = document.querySelector(
-    //     `[data-category="${feature.properties.category}"]`
-    //   ) as HTMLElement;
-
-    //   if (markerElement) {
-    //     console.log(
-    //       `Marker for category: ${feature.properties.category}, Display: ${markerElement.style.display}`
-    //     );
-    //     switch (layer) {
-    //       case darkSkyLayerCategories[0]: // Toggle All
-    //         markerElement.style.display = "block";
-    //         break;
-    //       case darkSkyLayerCategories[1]: // Dark Sky Reserves
-    //         markerElement.style.display =
-    //           feature.properties.category === "Dark Sky Reserves"
-    //             ? "block"
-    //             : "none";
-    //         break;
-    //       case darkSkyLayerCategories[2]: // Dark Sky Sanctuaries
-    //         markerElement.style.display =
-    //           feature.properties.category === "Dark Sky Sanctuaries"
-    //             ? "block"
-    //             : "none";
-    //         break;
-    //       case darkSkyLayerCategories[3]: // Dark Sky Parks
-    //         markerElement.style.display =
-    //           feature.properties.category === "Dark Sky Parks"
-    //             ? "block"
-    //             : "none";
-    //         break;
-    //       case darkSkyLayerCategories[4]: // None
-    //         markerElement.style.display = "none";
-    //         break;
-    //       default:
-    //         markerElement.style.display = "none";
-    //         break;
-    //     }
-    //   } else {
-    //     console.log(
-    //       `Marker for category ${feature.properties.category} not found.`
-    //     );
-    //   }
-    // });
-
-    // Debug: log visible markers
-    // const visibleMarkers = Array.from(allMarkers).filter(
-    //   (marker) => marker.style.display === "block"
-    // );
-    // console.log(`Visible markers: ${visibleMarkers.length}`, visibleMarkers);
+  const updateVISlayers = (layer: string) => {
+    if (map.current?.getLayer(layer)) {
+      switch (layer) {
+        case VISlayerIDs[0]:
+          VISlayerIDs.forEach((layer) => {
+            map.current?.setLayoutProperty(layer, "visibility", "none");
+          });
+          map.current?.setLayoutProperty(
+            VISlayerIDs[0],
+            "visibility",
+            "visible"
+          );
+          break;
+        case VISlayerIDs[1]:
+          VISlayerIDs.forEach((layer) => {
+            map.current?.setLayoutProperty(layer, "visibility", "none");
+          });
+          map.current?.setLayoutProperty(
+            VISlayerIDs[1],
+            "visibility",
+            "visible"
+          );
+          break;
+        case VISlayerIDs[2]:
+          VISlayerIDs.forEach((layer) => {
+            map.current?.setLayoutProperty(layer, "visibility", "none");
+          });
+          map.current?.setLayoutProperty(
+            VISlayerIDs[2],
+            "visibility",
+            "visible"
+          );
+          break;
+        case VISlayerIDs[3]:
+          VISlayerIDs.forEach((layer) => {
+            map.current?.setLayoutProperty(layer, "visibility", "none");
+          });
+          map.current?.setLayoutProperty(
+            VISlayerIDs[3],
+            "visibility",
+            "visible"
+          );
+          break;
+        case VISlayerIDs[4]:
+          VISlayerIDs.forEach((layer) => {
+            map.current?.setLayoutProperty(layer, "visibility", "none");
+          });
+          map.current?.setLayoutProperty(
+            VISlayerIDs[4],
+            "visibility",
+            "visible"
+          );
+          break;
+        case VISlayerIDs[5]:
+          VISlayerIDs.forEach((layer) => {
+            map.current?.setLayoutProperty(layer, "visibility", "none");
+          });
+          map.current?.setLayoutProperty(
+            VISlayerIDs[5],
+            "visibility",
+            "visible"
+          );
+          break;
+        case VISlayerIDs[6]:
+          VISlayerIDs.forEach((layer) => {
+            map.current?.setLayoutProperty(layer, "visibility", "none");
+          });
+          map.current?.setLayoutProperty(
+            VISlayerIDs[6],
+            "visibility",
+            "visible"
+          );
+          break;
+        case VISlayerIDs[7]:
+          VISlayerIDs.forEach((layer) => {
+            map.current?.setLayoutProperty(layer, "visibility", "none");
+          });
+          map.current?.setLayoutProperty(
+            VISlayerIDs[7],
+            "visibility",
+            "visible"
+          );
+          break;
+        case VISlayerIDs[8]:
+          VISlayerIDs.forEach((layer) => {
+            map.current?.setLayoutProperty(layer, "visibility", "none");
+          });
+          map.current?.setLayoutProperty(
+            VISlayerIDs[8],
+            "visibility",
+            "visible"
+          );
+          break;
+        case VISlayerIDs[9]:
+          VISlayerIDs.forEach((layer) => {
+            map.current?.setLayoutProperty(layer, "visibility", "none");
+          });
+          map.current?.setLayoutProperty(
+            VISlayerIDs[9],
+            "visibility",
+            "visible"
+          );
+          break;
+        case VISlayerIDs[10]:
+          VISlayerIDs.forEach((layer) => {
+            map.current?.setLayoutProperty(layer, "visibility", "none");
+          });
+          map.current?.setLayoutProperty(
+            VISlayerIDs[10],
+            "visibility",
+            "visible"
+          );
+          break;
+        case VISlayerIDs[11]:
+          VISlayerIDs.forEach((layer) => {
+            map.current?.setLayoutProperty(layer, "visibility", "none");
+          });
+          map.current?.setLayoutProperty(
+            VISlayerIDs[11],
+            "visibility",
+            "visible"
+          );
+          break;
+        case VISlayerIDs[12]:
+          VISlayerIDs.forEach((layer) => {
+            map.current?.setLayoutProperty(layer, "visibility", "none");
+          });
+          break;
+      }
+    } else {
+      console.warn(`Layer '${layer}' does not exist in the map's style.`);
+    }
   };
 
   return (
@@ -477,7 +588,7 @@ function App() {
         </Nav>
         <div className="map">
           <div ref={mapContainer} className="map-container" />
-          <SidePanel onLayerSelect={handleDarkSkyLayerSelect} />
+          <SidePanel onLayerSelect={recordChanges} />
 
           <div className="sidebar">
             <span className="sidebar-acknowledgements">

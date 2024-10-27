@@ -64,6 +64,32 @@ interface change {
 }
 const layerChanges: change[] = [];
 
+// Function to ensure only the most recent change for each flag is kept
+function manageLayerChanges() {
+  const latestChanges: change[] = [];
+
+  // Iterate backwards to keep the most recent change for each flag
+  for (let i = layerChanges.length - 1; i >= 0; i--) {
+    const change = layerChanges[i];
+
+    // Check if there's already a change with this flag in the latestLayerChanges array
+    if (
+      !latestChanges.some(
+        (existingChange) => existingChange.flag === change.flag
+      )
+    ) {
+      latestChanges.push(change);
+    }
+  }
+
+  // Reverse to maintain the original order of most recent changes
+  latestChanges.reverse();
+
+  // Update the original layerChanges array
+  layerChanges.length = 0;
+  layerChanges.push(...latestChanges);
+}
+
 const LayersCollapsible = ({
   darkSkyLayerIDs,
   viirsLayerIDs,
@@ -96,6 +122,12 @@ const LayersCollapsible = ({
       background: "#484a4d",
     });
   }, []);
+
+  window.addEventListener("beforeunload", () => {
+    manageLayerChanges();
+    onLayerSelect(layerChanges);
+    console.log(layerChanges);
+  });
 
   return (
     <div className={`layers-collapsible ${isAccordionOpen ? "open" : ""}`}>
