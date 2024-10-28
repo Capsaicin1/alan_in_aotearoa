@@ -49,15 +49,16 @@ const layers: Layers = {
         url: "mapbox://julesishomie.32ae7f6m",
       },
     },
-    {
-      type: "overallChange",
-      layer: {
-        name: "NTLDarker_tileset",
-        id: "NTLDarker",
-        layerType: "raster",
-        url: "mapbox://julesishomie.16zdzsub",
-      },
-    },
+    //commented this one out for now because the styling isn't right and just makes everything yellow
+    // {
+    //   type: "overallChange",
+    //   layer: {
+    //     name: "NTLDarker_tileset",
+    //     id: "NTLDarker",
+    //     layerType: "raster",
+    //     url: "mapbox://julesishomie.16zdzsub",
+    //   },
+    // },
   ],
   viirsLayers: [
     {

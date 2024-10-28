@@ -63,7 +63,7 @@ function App() {
 
   const NTLlayersIDs = [
     layers.overallChangeLayers[0].layer.id, // Brighter
-    layers.overallChangeLayers[1].layer.id, // Darker
+    // layers.overallChangeLayers[1].layer.id,  Darker
     "None",
   ];
 
