@@ -63,9 +63,12 @@ function App() {
 
   const NTLlayersIDs = [
     layers.overallChangeLayers[0].layer.id, // Brighter
-    layers.overallChangeLayers[1].layer.id, //Darker
+    layers.overallChangeLayers[1].layer.id, // Darker
     "None",
   ];
+
+  console.log(NTLlayersIDs);
+  console.log(selectedNTLlayer);
 
   const VISlayerIDs = [
     layers.viirsLayers[0].layer.id, //2012
@@ -123,7 +126,6 @@ function App() {
         });
       });
 
-      console.log(map.current.getStyle().layers);
       //Checks that the raster is loaded, and that is not already loaded, before adding it to the map.
       map.current.on("data", (e) => {
         if (e.isSourceLoaded) {
@@ -199,7 +201,6 @@ function App() {
         }
       });
     });
-
     // Add markers to the map to display the dark sky locations
     for (const feature of geoJSON.features) {
       // Create div for each element
@@ -417,6 +418,7 @@ function App() {
   const updateNTLlayers = (layer: string) => {
     if (map.current?.getLayer(layer)) {
       if (layer === NTLlayersIDs[0]) {
+        // Brighter
         map.current?.setLayoutProperty(NTLlayersIDs[1], "visibility", "none");
         map.current?.setLayoutProperty(
           NTLlayersIDs[0],
@@ -424,6 +426,7 @@ function App() {
           "visible"
         );
       } else if (layer === NTLlayersIDs[1]) {
+        //Darker
         map.current?.setLayoutProperty(NTLlayersIDs[0], "visibility", "none");
         map.current?.setLayoutProperty(
           NTLlayersIDs[1],
@@ -432,11 +435,7 @@ function App() {
         );
       } else if (layer === NTLlayersIDs[2]) {
         map.current?.setLayoutProperty(NTLlayersIDs[0], "visibility", "none");
-        map.current?.setLayoutProperty(
-          NTLlayersIDs[0],
-          "visibility",
-          "visible"
-        );
+        map.current?.setLayoutProperty(NTLlayersIDs[1], "visibility", "none");
       }
     } else {
       console.warn(`Layer '${layer}' does not exist in the map's style.`);
@@ -567,7 +566,10 @@ function App() {
           );
           break;
         case VISlayerIDs[12]:
-          VISlayerIDs.forEach((layer) => {
+          // VISlayerIDs.forEach((layer) => {
+          //   map.current?.setLayoutProperty(layer, "visibility", "none");
+          // });
+          VISlayerIDs.filter((layer) => layer !== "none").forEach((layer) => {
             map.current?.setLayoutProperty(layer, "visibility", "none");
           });
           break;
