@@ -42,6 +42,7 @@ const paint = {
     "raster-brightness-max": 1,
     "raster-contrast": 0.7,
   },
+  none: {},
 };
 
 export default paint;

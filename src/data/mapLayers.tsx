@@ -50,15 +50,15 @@ const layers: Layers = {
       },
     },
     //commented this one out for now because the styling isn't right and just makes everything yellow
-    // {
-    //   type: "overallChange",
-    //   layer: {
-    //     name: "NTLDarker_tileset",
-    //     id: "NTLDarker",
-    //     layerType: "raster",
-    //     url: "mapbox://julesishomie.16zdzsub",
-    //   },
-    // },
+    {
+      type: "overallChange",
+      layer: {
+        name: "NTLDarker_tileset",
+        id: "NTLDarker",
+        layerType: "raster",
+        url: "mapbox://julesishomie.16zdzsub",
+      },
+    },
   ],
   viirsLayers: [
     {
@@ -174,3 +174,4 @@ const layers: Layers = {
 
 const paint = {};
 export { layers, paint };
+export type { Layer };

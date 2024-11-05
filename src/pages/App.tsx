@@ -3,7 +3,7 @@ import { createRoot } from "react-dom/client";
 import "../styles/App.css";
 import geoJSON from "../data/darkSkyLocations.ts";
 import paint from "../data/mapStyles.ts";
-import { layers } from "../data/mapLayers.tsx";
+import { layers, Layer } from "../data/mapLayers.tsx";
 
 import { Nav, NavItem } from "../components/Nav/Nav.tsx";
 import Acknowledgements from "../components/Acknowledgements.tsx";
@@ -35,6 +35,8 @@ function App() {
   //State -> For components
   const [acknowledgeOpen, setAcknowledgeOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [sourcesLoaded, setSourcesLoaded] = useState(false);
+  const [stylesLoaded, setStylesLoaded] = useState(false);
   const [spinnerVisible, setSpinnerVisible] = useState(true);
   // const [refreshMarkers, setRefreshMarkers] = useState(false);
   const [selectedDSlayer, setSelectedDSLayer] = useState<string>(() => {
@@ -67,9 +69,6 @@ function App() {
     "None",
   ];
 
-  console.log(NTLlayersIDs);
-  console.log(selectedNTLlayer);
-
   const VISlayerIDs = [
     layers.viirsLayers[0].layer.id, //2012
     layers.viirsLayers[1].layer.id, //2013
@@ -85,13 +84,39 @@ function App() {
     layers.viirsLayers[11].layer.id, //2023
     "none",
   ];
-
   interface change {
     layerID: string;
     flag: "dks" | "vis" | "ntl";
   }
 
   const markerMap: { [category: string]: mapboxgl.Marker[] } = {};
+  // const sourceMap: { [category: string]: mapboxgl.RasterSource[] } = {};
+
+  // const addRasterLayer = (layerArg: Layer) => {
+  //   if (map.current?.isStyleLoaded()) {
+  //     if (map.current?.getSource(layerArg.name)) return;
+  //     map.current?.addLayer({
+  //       id: layerArg.id,
+  //       type: "raster",
+  //       source: layerArg.name,
+  //       paint:
+  //       layerArg.name.includes("NTL") === true
+  //           ? paint.brighter
+  //           : layerArg.name.includes("viirs") === true
+  //           ? paint.gradient
+  //           : paint.none,
+  //     });
+  //   } else {
+  //     map.current?.on("style.load", () => {
+  //       if (map.current?.getSource(layerArg.name)) return;
+  //       map.current?.addLayer({
+  //         id: layerArg.id,
+  //         type: "raster",
+  //         source: layerArg.name,
+  //       });
+  //     });
+  //   }
+  // };
 
   useEffect(() => {
     //initialize map only once
@@ -110,97 +135,48 @@ function App() {
 
     map.current.on("load", () => {
       if (map.current === null) return;
-      layers.overallChangeLayers.map(({ layer }) => {
-        map.current?.addSource(layer.name, {
-          type: "raster", // -> Always this
-          url: layer.url,
-          tileSize: 256, // -> Always this
-        });
-      });
-
-      layers.viirsLayers.map(({ layer }) => {
-        map.current?.addSource(layer.name, {
+      let sources = 0;
+      console.log(sources);
+      for (const layer of layers.overallChangeLayers) {
+        console.log("for loop");
+        console.log(map.current.getSource(layer.layer.name));
+        if (map.current.getSource(layer.layer.name)) return;
+        console.log("if statement");
+        map.current.addSource(layer.layer.name, {
           type: "raster",
-          url: layer.url,
+          url: layer.layer.url,
           tileSize: 256,
         });
-      });
 
-      //Checks that the raster is loaded, and that is not already loaded, before adding it to the map.
-      map.current.on("data", (e) => {
-        if (e.isSourceLoaded) {
-          layers.overallChangeLayers.map(({ layer }) => {
-            if (map.current?.getLayer(layer.id)) return;
-            map.current?.addLayer({
-              id: layer.id,
-              source: layer.name,
-              type: "raster",
-              layout: {
-                visibility: "visible",
-              },
-              paint: layer.id === "NTLBrighter" ? paint.brighter : paint.darker,
-            });
-            // console.log(`Just added ${layer.name}`);
-          });
+        sources++;
+      }
 
-          layers.viirsLayers.map(({ layer }) => {
-            if (map.current?.getLayer(layer.id)) return;
-            map.current?.addLayer({
-              id: layer.id,
-              source: layer.name,
-              maxzoom: 15,
-              minzoom: 0,
-              type: "raster",
-              layout: {
-                visibility: "visible",
-              },
-              paint: {
-                "raster-opacity": 0.8,
-                "raster-color": [
-                  "interpolate", // This defines the interpolation expression
-                  ["linear"], // The interpolation method
-                  ["raster-value"], // The property being used for the color interpolation
-                  0,
-                  "rgba(0, 0, 0, 0)", // Mapping values to colors
-                  20,
-                  "hsl(240, 100%, 70%)",
-                  40,
-                  "hsl(180, 100%, 50%)",
-                  60,
-                  "hsl(120, 100%, 60%)",
-                  80,
-                  "hsl(120, 100%, 30%)",
-                  100,
-                  "hsl(60, 100%, 60%)",
-                  140,
-                  "hsl(60, 100%, 40%)",
-                  180,
-                  "hsl(30, 100%, 50%)",
-                  220,
-                  "hsl(0, 100%, 50%)",
-                  234,
-                  "hsl(0, 100%, 30%)",
-                ],
-                "raster-color-mix": [255, 0, 0, 1], // Make sure this is compatible
-                "raster-color-range": [0, 234],
-              },
-            });
-            // console.log(`Just added ${layer.name}`);
-          });
-          // if (!map.current?.getLayer("NTLChangeAbs")) {
-          //   map.current?.addLayer({
-          //     id: "NTLChangeAbs",
-          //     source: "NTLChangeAbs_tileset",
-          //     type: "raster",
-          //     layout: {
-          //       visibility: "none",
-          //     },
-          //     /
-          //   });
-          //   console.log("raster is loaded");
-        }
-      });
+      for (const layer of layers.viirsLayers) {
+        if (map.current.getSource(layer.layer.name)) return;
+        map.current.addSource(layer.layer.name, {
+          type: "raster",
+          url: layer.layer.url,
+          tileSize: 256,
+        });
+        sources++;
+      }
+      console.log(sources);
     });
+
+    map.current.on("sourcedata", (e) => {
+      if (e.isSourceLoaded) {
+        setSourcesLoaded(true);
+      }
+    });
+
+    map.current.on("style.import.load", () => {
+      console.log("style loaded");
+      if (map.current?.isStyleLoaded()) {
+        setStylesLoaded(true);
+      }
+    });
+
+    console.log(map.current.getLayer("NTLBrighter"));
     // Add markers to the map to display the dark sky locations
     for (const feature of geoJSON.features) {
       // Create div for each element
@@ -237,6 +213,7 @@ function App() {
         marker.addTo(map.current!);
       }
     }
+
     // Gets and displays the following values as the user moves the map by updating the state of each variable
     map.current.on("move", () => {
       if (map.current !== null) {
@@ -290,27 +267,40 @@ function App() {
 
   useEffect(() => {
     console.log(`NTL layer updated to ${selectedNTLlayer}`);
+    console.log(map.current?.isStyleLoaded());
+    const currentLayer = layers.overallChangeLayers.find(
+      (layer) => layer.layer.id === selectedNTLlayer
+    )?.layer;
 
-    if (!map.current?.isStyleLoaded()) {
-      map.current?.on("style.load", () => {
-        updateNTLlayers(selectedNTLlayer);
-      });
-    } else {
-      updateNTLlayers(selectedNTLlayer);
+    if (currentLayer) {
+      addRasterLayer(currentLayer);
     }
-  }, [selectedNTLlayer]);
+
+    console.log(currentLayer);
+    return () => {
+      if (currentLayer) {
+        removeRasterLayer(currentLayer);
+      }
+    };
+  }, [sourcesLoaded, selectedNTLlayer, stylesLoaded]);
 
   useEffect(() => {
     console.log(`VIS layer updated to ${selectedVISlayer}`);
 
-    if (!map.current?.isStyleLoaded()) {
-      map.current?.on("style.load", () => {
-        updateVISlayers(selectedVISlayer);
-      });
-    } else {
-      updateVISlayers(selectedVISlayer);
+    const currentLayer = layers.viirsLayers.find(
+      (layer) => layer.layer.id === selectedVISlayer
+    )?.layer;
+
+    if (currentLayer) {
+      addRasterLayer(currentLayer);
     }
-  }, [selectedVISlayer]);
+
+    return () => {
+      if (currentLayer) {
+        removeRasterLayer(currentLayer);
+      }
+    };
+  }, [sourcesLoaded, selectedVISlayer, stylesLoaded]);
 
   useEffect(() => {
     if (!isLoading) {
@@ -347,6 +337,31 @@ function App() {
     }
   };
 
+  const addRasterLayer = (layerArg: Layer) => {
+    if (!map.current?.getSource(layerArg.name)) {
+      map.current?.addLayer({
+        id: layerArg.id,
+        type: "raster",
+        source: layerArg.name,
+        paint:
+          layerArg.name.includes("NTL") === true
+            ? paint.brighter
+            : layerArg.name.includes("viirs") === true
+            ? paint.gradient
+            : paint.none,
+      });
+    } else {
+      console.log("source doesn't exist");
+    }
+  };
+
+  function removeRasterLayer(layer: Layer) {
+    if (map.current?.getLayer(layer.id)) {
+      map.current?.removeLayer(layer.id);
+      map.current?.removeSource(layer.name);
+    }
+  }
+
   // /**
   //  * Toggles the layers visibility on and off when called.
   //  * @param layerID
@@ -376,7 +391,7 @@ function App() {
     });
   };
 
-  const updateMarkers = (layer: string) => {
+  function updateMarkers(layer: string) {
     // console.log(`Updating markers for category: ${layer}`);
 
     //Remove all markers from the map
@@ -413,7 +428,7 @@ function App() {
       default:
         break;
     }
-  };
+  }
 
   const updateNTLlayers = (layer: string) => {
     if (map.current?.getLayer(layer)) {
@@ -443,9 +458,18 @@ function App() {
   };
 
   const updateVISlayers = (layer: string) => {
-    if (map.current?.getLayer(layer)) {
+    console.log("function was called");
+    console.log(layer);
+
+    const layerExists = map.current?.getLayer(layer);
+
+    console.log(layerExists);
+    if (layerExists) {
+      console.log("layer exists");
       switch (layer) {
-        case VISlayerIDs[0]:
+        // case VISlayerIDs[0]:
+        case "2012":
+          console.log("in 12");
           VISlayerIDs.forEach((layer) => {
             map.current?.setLayoutProperty(layer, "visibility", "none");
           });
