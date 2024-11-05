@@ -36,7 +36,8 @@ function App() {
   const [acknowledgeOpen, setAcknowledgeOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [spinnerVisible, setSpinnerVisible] = useState(true);
-  // const [refreshMarkers, setRefreshMarkers] = useState(false);
+
+  //These three are special because they return a callback function to retrieve the data from localStorage
   const [selectedDSlayer, setSelectedDSLayer] = useState<string>(() => {
     return localStorage.getItem("selectedDarkSkyLayer") || "Toggle All";
   });
@@ -50,7 +51,7 @@ function App() {
   });
 
   //Constants
-  // const activeLayerIDs = ["NTLChangeAbs", "NTLBrighter"];
+  //Mapbox base style
   const style = "mapbox://styles/julesishomie/clwycze8h019801pp1qto1bwq";
 
   const darkSkyLayerCategories = [
@@ -66,9 +67,6 @@ function App() {
     // layers.overallChangeLayers[1].layer.id,  Darker
     "None",
   ];
-
-  console.log(NTLlayersIDs);
-  console.log(selectedNTLlayer);
 
   const VISlayerIDs = [
     layers.viirsLayers[0].layer.id, //2012
@@ -86,13 +84,19 @@ function App() {
     "none",
   ];
 
+  /**
+   * Used to define what a 'change' is. This is s that I can record
+   * multiple layer changes
+   */
   interface change {
     layerID: string;
     flag: "dks" | "vis" | "ntl";
   }
 
+  //Array of dark sky markers on the map
   const markerMap: { [category: string]: mapboxgl.Marker[] } = {};
 
+  //This effect is where the map gets initialized
   useEffect(() => {
     //initialize map only once
     if (map.current) return;
@@ -108,8 +112,11 @@ function App() {
       minZoom: 0,
     });
 
+    // The load event fires when the map is finished loading. Here I'm just adding the sources to my raster layers
     map.current.on("load", () => {
       if (map.current === null) return;
+
+      // Looping over the arrays and adding a source for each layer object
       layers.overallChangeLayers.map(({ layer }) => {
         map.current?.addSource(layer.name, {
           type: "raster", // -> Always this
@@ -126,9 +133,10 @@ function App() {
         });
       });
 
-      //Checks that the raster is loaded, and that is not already loaded, before adding it to the map.
+      //Checks that the raster source is loaded before trying to add layers
       map.current.on("data", (e) => {
         if (e.isSourceLoaded) {
+          //Looping over the layer objects and adding each layer to the map -> using the sources I just added as well
           layers.overallChangeLayers.map(({ layer }) => {
             if (map.current?.getLayer(layer.id)) return;
             map.current?.addLayer({
@@ -201,6 +209,7 @@ function App() {
         }
       });
     });
+
     // Add markers to the map to display the dark sky locations
     for (const feature of geoJSON.features) {
       // Create div for each element
@@ -211,6 +220,7 @@ function App() {
       const iconDiv = document.createElement("div");
       iconDiv.className = "icon-div";
 
+      // Append an iconComponent as a child of the marker div
       const root = createRoot(iconDiv);
       root.render(<IconComponent icon={MapPin} color="white" scale={20} />);
       el.appendChild(iconDiv);
@@ -218,7 +228,7 @@ function App() {
       // Explicitly cast coordinates as tuple [number, number]
       const coordinates = feature.geometry.coordinates as [number, number];
 
-      // make marker for each feature and add it to the map
+      // Make marker for each feature and add it to the map
       const marker = new mapboxgl.Marker(el).setLngLat(coordinates).setPopup(
         new mapboxgl.Popup({ offset: 25 }) // add popups
           .setHTML(
@@ -237,6 +247,7 @@ function App() {
         marker.addTo(map.current!);
       }
     }
+
     // Gets and displays the following values as the user moves the map by updating the state of each variable
     map.current.on("move", () => {
       if (map.current !== null) {
@@ -259,7 +270,7 @@ function App() {
       .querySelector(".reset-map-view")
       ?.addEventListener("click", () => resetMapView());
 
-    // These event listeners listen for events that trigger the loading spinner.
+    // The setTimeout waits after the map is done loading before removing the spinner to make transition smoother
     map.current.on("load", () => {
       setTimeout(() => {
         setIsLoading(false);
@@ -276,6 +287,9 @@ function App() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  /**
+   * Updates the markers on the map based on the selected category.
+   */
   useEffect(() => {
     console.log(`DS layer updated to: ${selectedDSlayer}`);
 
@@ -288,6 +302,9 @@ function App() {
     }
   }, [selectedDSlayer]);
 
+  /**
+   * Updates the NTL layers on the map based on the selected category.
+   */
   useEffect(() => {
     console.log(`NTL layer updated to ${selectedNTLlayer}`);
 
@@ -300,6 +317,9 @@ function App() {
     }
   }, [selectedNTLlayer]);
 
+  /**
+   * Updates the VIS layers on the map based on the selected category.
+   */
   useEffect(() => {
     console.log(`VIS layer updated to ${selectedVISlayer}`);
 
@@ -361,6 +381,17 @@ function App() {
   //   }
   // };
 
+  /**
+   * Records changes to different layers based on the provided changes array.
+   *
+   * This function iterates over an array of changes and updates the state and local storage
+   * based on the flag of each change. It handles three types of flags:
+   * - "dks": Updates the selected Dark Sky layer.
+   * - "ntl": Updates the selected Night Time Lights layer.
+   * - "vis": Updates the selected Visible layer.
+   *
+   * @param {change[]} changes - An array of change objects, each containing a flag and a layerID.
+   */
   const recordChanges = (changes: change[]) => {
     changes.forEach((change) => {
       if (change.flag === "dks") {
@@ -376,6 +407,14 @@ function App() {
     });
   };
 
+  /**
+   * Updates the markers on the map based on the selected layer.
+   *
+   * This function first removes all existing markers from the map.
+   * Then, it adds markers back to the map according to the specified layer.
+   *
+   * @param {string} layer - The category of markers to display on the map.
+   */
   const updateMarkers = (layer: string) => {
     // console.log(`Updating markers for category: ${layer}`);
 
@@ -415,6 +454,20 @@ function App() {
     }
   };
 
+  /**
+   * Updates the visibility of NTL (Night Time Lights) layers on the map.
+   *
+   * Depending on the provided layer ID, this function will toggle the visibility
+   * of the specified NTL layer and hide the others. It handles three specific
+   * layers identified by `NTLlayersIDs`:
+   * - If the layer is the first ID in `NTLlayersIDs`, it sets the first layer to visible and hides the second.
+   * - If the layer is the second ID in `NTLlayersIDs`, it sets the second layer to visible and hides the first.
+   * - If the layer is the third ID in `NTLlayersIDs`, it hides both the first and second layers.
+   *
+   * If the specified layer does not exist in the map's style, a warning is logged to the console.
+   *
+   * @param {string} layer - The ID of the layer to update.
+   */
   const updateNTLlayers = (layer: string) => {
     if (map.current?.getLayer(layer)) {
       if (layer === NTLlayersIDs[0]) {
@@ -442,6 +495,17 @@ function App() {
     }
   };
 
+  /**
+   * Updates the visibility of layers on the map based on the provided layer ID.
+   *
+   * This function checks if the specified layer exists in the map's style. If it does,
+   * it sets the visibility of all layers in the `VISlayerIDs` array to "none" and then
+   * sets the visibility of the specified layer to "visible". If the specified layer is
+   * the last one in the `VISlayerIDs` array, it sets the visibility of all layers except
+   * those with the ID "none" to "none".
+   *
+   * @param {string} layer - The ID of the layer to be made visible.
+   */
   const updateVISlayers = (layer: string) => {
     if (map.current?.getLayer(layer)) {
       switch (layer) {
@@ -579,6 +643,7 @@ function App() {
     }
   };
 
+  //Here all the content on the map is rendered
   return (
     <>
       {spinnerVisible && <LoadingSpinner />}

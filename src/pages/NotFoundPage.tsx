@@ -4,6 +4,10 @@ import { CSSProperties, useState } from "react";
 const NotFoundPage = () => {
   const [isHovered, setIsHovered] = useState(false);
 
+  /**
+   * Because I didn't make a css file - using events to check for hover
+   * so that I can style the button
+   */
   const handleMouseEnter = () => {
     setIsHovered(true);
   };
@@ -17,6 +21,7 @@ const NotFoundPage = () => {
       Oops! It seems that this page doesn't exist...
       <Link
         style={
+          //Sets style based on hover state
           isHovered
             ? { ...style.homeButton, ...style.homeButtonHover }
             : style.homeButton
@@ -31,6 +36,10 @@ const NotFoundPage = () => {
   );
 };
 
+/**
+ * Style object to use inline styles. This because I won't have a css
+ * file for this page. Too small
+ */
 const style: {
   notFound: CSSProperties;
   homeButton: CSSProperties;

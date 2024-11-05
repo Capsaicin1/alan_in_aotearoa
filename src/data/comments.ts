@@ -1,3 +1,5 @@
+//### This is just a place for me to store some code snippets that I might want to reference later.
+
 // First, hide all markers
 // geoJSON.features.forEach((feature) => {
 //   const markerElement = document.querySelector(

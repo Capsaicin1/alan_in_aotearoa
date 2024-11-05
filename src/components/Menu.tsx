@@ -1,11 +1,13 @@
 import React, { ReactNode, useState } from "react";
-//import { IconType } from "react-icons";
 import "./Menu.css";
 
 type Icon = {
   icon: ReactNode;
 };
 
+/**
+ * NOT using this component at all
+ */
 const Menu = (props: React.PropsWithChildren) => {
   return (
     <div>

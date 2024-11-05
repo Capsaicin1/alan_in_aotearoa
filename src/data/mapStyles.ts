@@ -1,3 +1,26 @@
+/**
+ * The `paint` object defines various styles for raster layers in a map.
+ *
+ * It contains three main styles:
+ *
+ * 1. `gradient`: Defines a color gradient for raster layers using interpolation.
+ *    - `raster-opacity`: Sets the opacity of the raster layer.
+ *    - `raster-color`: Specifies the color interpolation based on raster values.
+ *    - `raster-color-mix`: Defines the color mix for the raster layer.
+ *    - `raster-color-range`: Sets the range of raster values for the color interpolation.
+ *
+ * 2. `brighter`: Defines a style with a brighter color for raster layers.
+ *    - `raster-color`: Sets the color of the raster layer.
+ *    - `raster-opacity`: Sets the opacity of the raster layer.
+ *    - `raster-brightness-max`: Sets the maximum brightness of the raster layer.
+ *    - `raster-contrast`: Sets the contrast of the raster layer.
+ *
+ * 3. `darker`: Defines a style with a darker color for raster layers.
+ *    - `raster-color`: Sets the color of the raster layer.
+ *    - `raster-opacity`: Sets the opacity of the raster layer.
+ *    - `raster-brightness-max`: Sets the maximum brightness of the raster layer.
+ *    - `raster-contrast`: Sets the contrast of the raster layer.
+ */
 const paint = {
   gradient: {
     "raster-opacity": 0.8,

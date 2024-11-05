@@ -7,8 +7,8 @@ interface IconStar {
 }
 
 /**
- * Returns a react component that takes a React Icon as a prop
- * This allows mr to use react icons with React, Typescript
+ * Returns a React component that takes a React Icon as a prop
+ * This allows me to use React icons with React, Typescript
  */
 const IconComponent: React.FC<IconStar & React.ComponentProps<IconType>> = ({
   icon: Icon,

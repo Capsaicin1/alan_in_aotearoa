@@ -1,3 +1,4 @@
+// Does this really need explaining?
 const Divider = () => {
   const styles = {
     borderBottom: "1px solid #474a4d",

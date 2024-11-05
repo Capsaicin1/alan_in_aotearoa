@@ -1,3 +1,6 @@
+/**
+ * Imports all the assets and exports them with easy names
+ */
 import { IoChevronDown as DownArrow } from "react-icons/io5";
 import { IoChevronForward as RightArrow } from "react-icons/io5";
 import { IoChevronBackOutline as LeftArrow } from "react-icons/io5";
